@@ -1,0 +1,146 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer utilities {
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+  
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  /* Scroll animation styles */
+  .scroll-animate {
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity, transform;
+  }
+
+  /* Fade Up - starts below, moves up */
+  .scroll-animate-fade-up {
+    transform: translateY(60px);
+  }
+  .scroll-animate-fade-up.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fade Down - starts above, moves down */
+  .scroll-animate-fade-down {
+    transform: translateY(-60px);
+  }
+  .scroll-animate-fade-down.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fade Left - starts from right, moves left */
+  .scroll-animate-fade-left {
+    transform: translateX(80px);
+  }
+  .scroll-animate-fade-left.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Fade Right - starts from left, moves right */
+  .scroll-animate-fade-right {
+    transform: translateX(-80px);
+  }
+  .scroll-animate-fade-right.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Scale - starts small, scales up */
+  .scroll-animate-scale {
+    transform: scale(0.6);
+  }
+  .scroll-animate-scale.animate-in {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Rotate - starts rotated and small, rotates to normal */
+  .scroll-animate-rotate {
+    transform: rotate(-12deg) scale(0.7);
+  }
+  .scroll-animate-rotate.animate-in {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  /* Slide Up - starts below with scale */
+  .scroll-animate-slide-up {
+    transform: translateY(80px) scale(0.85);
+  }
+  .scroll-animate-slide-up.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Zoom In - starts very small, zooms in */
+  .scroll-animate-zoom-in {
+    transform: scale(0.5);
+  }
+  .scroll-animate-zoom-in.animate-in {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-rose-600 text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-rose-600 text-rose-600 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+  }
+  
+  .input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent;
+  }
+}
+
