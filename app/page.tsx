@@ -12,6 +12,11 @@ async function getFeaturedProducts() {
     const products = await prisma.product.findMany({
       where: { featured: true },
       orderBy: { createdAt: "desc" },
+      include: {
+        images: {
+          orderBy: { position: "asc" },
+        },
+      },
     });
     return products;
   } catch (error) {
@@ -24,6 +29,11 @@ async function getAllProducts() {
   try {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        images: {
+          orderBy: { position: "asc" },
+        },
+      },
     });
     return products;
   } catch (error) {

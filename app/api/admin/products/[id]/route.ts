@@ -25,46 +25,96 @@ export async function PUT(
     }
 
     const productId = parseInt(params.id)
-    const imageUrls: string[] | null =
-      Array.isArray(images) && images.length > 0
-        ? images.filter((u: unknown) => typeof u === 'string' && u.trim().length > 0)
-        : image
-        ? [image]
-        : null
 
-    const chosenCoverIndex =
-      typeof coverIndex === 'number' && imageUrls && imageUrls[coverIndex] ? coverIndex : 0
+    // Handle both formats: string array or object array
+    let imageUrls: string[] | null = null
+    let chosenCoverIndex = 0
 
-    const updated = await prisma.$transaction(async (tx) => {
-      const updatedProduct = await tx.product.update({
-        where: { id: productId },
-        data: {
-          name,
-          description,
-          price: parseFloat(price),
-          image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
-          category: category || null,
-          stock: parseInt(stock),
-          featured: featured || false,
-        },
-      })
-
-      if (imageUrls) {
-        await tx.productImage.deleteMany({ where: { productId } })
-        if (imageUrls.length > 0) {
-          await tx.productImage.createMany({
-            data: imageUrls.map((url, idx) => ({
-              productId,
-              url,
-              isCover: idx === chosenCoverIndex,
-              position: idx,
-            })),
-          })
-        }
+    if (Array.isArray(images) && images.length > 0) {
+      // Check if it's an array of strings or objects
+      if (typeof images[0] === 'string') {
+        imageUrls = images.filter((u: unknown) => typeof u === 'string' && u.trim().length > 0)
+        chosenCoverIndex = typeof coverIndex === 'number' && imageUrls.length > 0 
+          ? Math.min(coverIndex, imageUrls.length - 1) 
+          : 0
+      } else {
+        // Array of objects with url, isCover, position
+        imageUrls = images
+          .filter((img: any) => img.url && typeof img.url === 'string' && img.url.trim().length > 0)
+          .map((img: any) => img.url.trim())
+        const coverImg = images.find((img: any) => img.isCover)
+        chosenCoverIndex = coverImg ? images.indexOf(coverImg) : 0
       }
+    } else if (image && typeof image === 'string' && image.trim().length > 0) {
+      imageUrls = [image.trim()]
+      chosenCoverIndex = 0
+    }
 
-      return updatedProduct
-    })
+    let updated
+    try {
+      updated = await prisma.$transaction(async (tx) => {
+        const updatedProduct = await tx.product.update({
+          where: { id: productId },
+          data: {
+            name,
+            description,
+            price: parseFloat(price),
+            image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
+            category: category || null,
+            stock: parseInt(stock),
+            featured: featured || false,
+          },
+        })
+
+        // Delete existing images and create new ones
+        try {
+          await tx.productImage.deleteMany({ where: { productId } })
+        } catch (error: any) {
+          // If table doesn't exist, continue
+          if (!error?.message?.includes('does not exist') && !error?.message?.includes('productimage')) {
+            throw error
+          }
+        }
+
+        if (imageUrls && imageUrls.length > 0) {
+          try {
+            await tx.productImage.createMany({
+              data: imageUrls.map((url, idx) => ({
+                productId,
+                url,
+                isCover: idx === chosenCoverIndex,
+                position: idx,
+              })),
+            })
+          } catch (error: any) {
+            // If table doesn't exist, continue without images
+            if (!error?.message?.includes('does not exist') && !error?.message?.includes('productimage')) {
+              throw error
+            }
+          }
+        }
+
+        return updatedProduct
+      })
+    } catch (error: any) {
+      // If transaction fails due to images table, update product without images
+      if (error?.message?.includes('productimage') || error?.message?.includes('does not exist')) {
+        updated = await prisma.product.update({
+          where: { id: productId },
+          data: {
+            name,
+            description,
+            price: parseFloat(price),
+            image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
+            category: category || null,
+            stock: parseInt(stock),
+            featured: featured || false,
+          },
+        })
+      } else {
+        throw error
+      }
+    }
 
     return NextResponse.json({ product: updated })
   } catch (error) {

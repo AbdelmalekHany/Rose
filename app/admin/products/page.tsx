@@ -12,9 +12,26 @@ export default async function AdminProductsPage() {
     redirect('/')
   }
 
-  const products = await prisma.product.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
+  let products
+  try {
+    products = await prisma.product.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        images: {
+          orderBy: { position: 'asc' },
+        },
+      },
+    })
+  } catch (error: any) {
+    // If images table doesn't exist yet, fetch without images
+    if (error?.message?.includes('productimage') || error?.message?.includes('does not exist')) {
+      products = await prisma.product.findMany({
+        orderBy: { createdAt: 'desc' },
+      })
+    } else {
+      throw error
+    }
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

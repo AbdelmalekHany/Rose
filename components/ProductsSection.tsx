@@ -4,6 +4,13 @@ import { useState, useMemo } from 'react'
 import ProductCard from './ProductCard'
 import ScrollAnimation from './ScrollAnimation'
 
+interface ProductImage {
+  id: number
+  url: string
+  position: number
+  isCover?: boolean
+}
+
 interface Product {
   id: number | string
   name: string
@@ -12,6 +19,7 @@ interface Product {
   image?: string | null
   stock: number
   createdAt: Date
+  images?: ProductImage[]
 }
 
 interface ProductsSectionProps {

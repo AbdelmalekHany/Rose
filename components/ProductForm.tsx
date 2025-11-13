@@ -3,6 +3,13 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 
+interface ProductImage {
+  id: number
+  url: string
+  position: number
+  isCover?: boolean
+}
+
 interface Product {
   id: number | string
   name: string
@@ -12,6 +19,7 @@ interface Product {
   category: string | null
   stock: number
   featured: boolean
+  images?: ProductImage[]
 }
 
 export default function ProductForm({ product }: { product?: Product }) {
@@ -25,10 +33,24 @@ export default function ProductForm({ product }: { product?: Product }) {
     stock: product?.stock.toString() || '0',
     featured: product?.featured || false,
   })
-  const [images, setImages] = useState<string[]>(
-    product?.image ? [product.image] : []
-  )
-  const [coverIndex, setCoverIndex] = useState<number>(0)
+  
+  // Initialize images from product images array or fallback to single image
+  const [images, setImages] = useState<string[]>(() => {
+    if (product?.images && product.images.length > 0) {
+      return product.images
+        .sort((a, b) => a.position - b.position)
+        .map(img => img.url)
+    }
+    return product?.image ? [product.image] : []
+  })
+  const [coverIndex, setCoverIndex] = useState<number>(() => {
+    if (product?.images && product.images.length > 0) {
+      const coverIdx = product.images.findIndex(img => img.isCover)
+      return coverIdx >= 0 ? coverIdx : 0
+    }
+    return 0
+  })
+  
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -38,11 +60,23 @@ export default function ProductForm({ product }: { product?: Product }) {
     setLoading(true)
 
     try {
+      // Filter out empty image URLs and prepare images data
+      const validImages = images
+        .filter(img => img.url.trim() !== '')
+        .map((img, index) => ({
+          url: img.url.trim(),
+          isCover: img.isCover,
+          position: index,
+        }))
+
       const url = product
         ? `/api/admin/products/${String(product.id)}`
         : '/api/admin/products'
       const method = product ? 'PUT' : 'POST'
 
+      // Filter out empty image URLs
+      const validImages = images.filter(url => url.trim() !== '')
+      
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -50,13 +84,12 @@ export default function ProductForm({ product }: { product?: Product }) {
           ...formData,
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock),
-          images,
-          coverIndex,
+          images: validImages,
+          coverIndex: validImages.length > 0 ? Math.min(coverIndex, validImages.length - 1) : 0,
           // keep legacy image set to selected cover for compatibility
-          image:
-            images && images.length > 0
-              ? images[Math.min(coverIndex, images.length - 1)]
-              : formData.image || '',
+          image: validImages.length > 0
+            ? validImages[Math.min(coverIndex, validImages.length - 1)]
+            : formData.image || '',
         }),
       })
 
@@ -164,18 +197,18 @@ export default function ProductForm({ product }: { product?: Product }) {
 
       <div>
         <label className="block text-sm font-medium mb-2">
-          Images and Cover
+          Product Images
         </label>
         <div className="space-y-3">
           {images.map((url, idx) => (
-            <div key={idx} className="flex items-center gap-3">
+            <div key={idx} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
               <input
                 type="radio"
                 name="cover-image"
                 checked={coverIndex === idx}
                 onChange={() => setCoverIndex(idx)}
-                className="w-4 h-4"
-                title="Set as cover"
+                className="w-4 h-4 text-rose-600"
+                title="Set as cover image"
               />
               <input
                 type="url"
@@ -190,36 +223,50 @@ export default function ProductForm({ product }: { product?: Product }) {
               />
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="px-3 py-2 text-red-600 hover:bg-red-50 rounded transition-colors"
                 onClick={() => {
                   const next = images.filter((_, i) => i !== idx)
                   setImages(next)
-                  if (coverIndex === idx) {
+                  if (coverIndex === idx && next.length > 0) {
                     setCoverIndex(0)
                   } else if (coverIndex > idx) {
                     setCoverIndex(coverIndex - 1)
                   }
                 }}
+                disabled={images.length === 1}
               >
                 Remove
               </button>
             </div>
           ))}
-          <div className="flex gap-3">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setImages([...images, ''])}
-            >
-              Add image
-            </button>
-            {images.length === 0 && (
-              <span className="text-sm text-gray-500">
-                Optional. Add one or more image URLs, then choose a cover.
-              </span>
-            )}
-          </div>
+          <button
+            type="button"
+            className="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-rose-400 hover:text-rose-600 transition-colors"
+            onClick={() => setImages([...images, ''])}
+          >
+            + Add Another Image
+          </button>
         </div>
+        <p className="mt-2 text-xs text-gray-500">
+          Add multiple images for your product. Select one as the cover image (radio button) to use it as the main product image.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="image" className="block text-sm font-medium mb-2">
+          Legacy Image URL (Optional - for backward compatibility)
+        </label>
+        <input
+          id="image"
+          type="url"
+          value={formData.image}
+          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+          className="input"
+          placeholder="https://example.com/image.jpg"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          This field is kept for backward compatibility. Use the Product Images section above for multiple images.
+        </p>
       </div>
 
       <div className="flex items-center">

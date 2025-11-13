@@ -5,6 +5,13 @@ import Image from 'next/image'
 import { useCart } from '@/hooks/useCart'
 import { useState } from 'react'
 
+interface ProductImage {
+  id: number
+  url: string
+  position: number
+  isCover?: boolean
+}
+
 interface Product {
   id: number | string
   name: string
@@ -12,12 +19,18 @@ interface Product {
   price: number
   image?: string | null
   stock: number
+  images?: ProductImage[]
 }
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart()
   const [adding, setAdding] = useState(false)
   const [imageError, setImageError] = useState(false)
+
+  // Get the cover image (isCover=true) or first image from images array, or fall back to product.image
+  const displayImage = product.images && product.images.length > 0 
+    ? (product.images.find(img => img.isCover)?.url || product.images[0].url)
+    : product.image
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -40,18 +53,18 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.id}`} className="card hover:shadow-xl transition-shadow">
       <div className="aspect-square relative bg-gray-100">
-        {product.image && !imageError ? (
+        {displayImage && !imageError ? (
           <Image
-            src={product.image}
+            src={displayImage}
             alt={product.name}
             fill
             className="object-cover"
             unoptimized
             onError={() => setImageError(true)}
           />
-        ) : product.image && imageError ? (
+        ) : displayImage && imageError ? (
           <img
-            src={product.image}
+            src={displayImage}
             alt={product.name}
             className="w-full h-full object-cover"
             onError={(e) => {

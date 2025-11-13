@@ -5,6 +5,13 @@ import { useCart } from '@/hooks/useCart'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+interface ProductImage {
+  id: number
+  url: string
+  position: number
+  isCover?: boolean
+}
+
 interface Product {
   id: number | string
   name: string
@@ -13,6 +20,7 @@ interface Product {
   image?: string | null
   category: string | null
   stock: number
+  images?: ProductImage[]
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
@@ -20,7 +28,17 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1)
   const [adding, setAdding] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const router = useRouter()
+
+  // Get all images - prefer images array, fall back to product.image
+  const allImages = product.images && product.images.length > 0
+    ? product.images.map(img => img.url)
+    : product.image
+      ? [product.image]
+      : []
+
+  const displayImage = allImages[selectedImageIndex] || null
 
   const handleAddToCart = async () => {
     if (product.stock === 0) {
@@ -43,29 +61,60 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* Image */}
-        <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden">
-          {product.image && !imageError ? (
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover"
-              unoptimized
-              onError={() => setImageError(true)}
-            />
-          ) : product.image && imageError ? (
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none'
-              }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl">
-              No Image
+        {/* Image Gallery */}
+        <div>
+          {/* Main Image */}
+          <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden mb-4">
+            {displayImage && !imageError ? (
+              <Image
+                src={displayImage}
+                alt={product.name}
+                fill
+                className="object-cover"
+                unoptimized
+                onError={() => setImageError(true)}
+              />
+            ) : displayImage && imageError ? (
+              <img
+                src={displayImage}
+                alt={product.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl">
+                No Image
+              </div>
+            )}
+          </div>
+          
+          {/* Thumbnail Gallery */}
+          {allImages.length > 1 && (
+            <div className="grid grid-cols-4 gap-2">
+              {allImages.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setSelectedImageIndex(index)
+                    setImageError(false)
+                  }}
+                  className={`aspect-square relative rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedImageIndex === index
+                      ? 'border-rose-600 ring-2 ring-rose-200'
+                      : 'border-gray-200 hover:border-rose-300'
+                  }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`${product.name} - Image ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </button>
+              ))}
             </div>
           )}
         </div>

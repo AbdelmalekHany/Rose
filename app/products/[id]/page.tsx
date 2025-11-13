@@ -11,6 +11,11 @@ async function getProduct(id: string) {
     }
     const product = await prisma.product.findUnique({
       where: { id: productId },
+      include: {
+        images: {
+          orderBy: { position: "asc" },
+        },
+      },
     })
     return product
   } catch (error) {

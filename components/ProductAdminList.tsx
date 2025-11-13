@@ -5,6 +5,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
+interface ProductImage {
+  id: number
+  url: string
+  position: number
+  isCover?: boolean
+}
+
 interface Product {
   id: number | string
   name: string
@@ -14,6 +21,7 @@ interface Product {
   category: string | null
   stock: number
   featured: boolean
+  images?: ProductImage[]
 }
 
 export default function ProductAdminList({ products }: { products: Product[] }) {
@@ -84,18 +92,26 @@ export default function ProductAdminList({ products }: { products: Product[] }) 
                 <tr key={product.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="w-16 h-16 relative bg-gray-100 rounded">
-                      {product.image ? (
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          className="object-cover rounded"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                          No Image
-                        </div>
-                      )}
+                      {(() => {
+                        // Get the cover image (isCover=true) or first image from images array, or fall back to product.image
+                        const displayImage = product.images && product.images.length > 0 
+                          ? (product.images.find(img => img.isCover)?.url || product.images[0].url)
+                          : product.image
+                        
+                        return displayImage ? (
+                          <Image
+                            src={displayImage}
+                            alt={product.name}
+                            fill
+                            className="object-cover rounded"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                            No Image
+                          </div>
+                        )
+                      })()}
                     </div>
                   </td>
                   <td className="px-6 py-4">

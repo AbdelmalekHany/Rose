@@ -21,42 +21,76 @@ export async function POST(request: Request) {
       )
     }
 
-    const imageUrls: string[] | null =
-      Array.isArray(images) && images.length > 0
-        ? images.filter((u: unknown) => typeof u === 'string' && u.trim().length > 0)
-        : image
-        ? [image]
-        : null
+    // Handle both formats: string array or object array
+    let imageUrls: string[] | null = null
+    let chosenCoverIndex = 0
 
-    const chosenCoverIndex =
-      typeof coverIndex === 'number' && imageUrls && imageUrls[coverIndex] ? coverIndex : 0
-
-    const result = await prisma.$transaction(async (tx) => {
-      const created = await tx.product.create({
-        data: {
-          name,
-          description,
-          price: parseFloat(price),
-          image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
-          category: category || null,
-          stock: parseInt(stock),
-          featured: featured || false,
-        },
-      })
-
-      if (imageUrls && imageUrls.length > 0) {
-        await tx.productImage.createMany({
-          data: imageUrls.map((url, idx) => ({
-            productId: created.id,
-            url,
-            isCover: idx === chosenCoverIndex,
-            position: idx,
-          })),
-        })
+    if (Array.isArray(images) && images.length > 0) {
+      // Check if it's an array of strings or objects
+      if (typeof images[0] === 'string') {
+        imageUrls = images.filter((u: unknown) => typeof u === 'string' && u.trim().length > 0)
+        chosenCoverIndex = typeof coverIndex === 'number' && imageUrls.length > 0 
+          ? Math.min(coverIndex, imageUrls.length - 1) 
+          : 0
+      } else {
+        // Array of objects with url, isCover, position
+        imageUrls = images
+          .filter((img: any) => img.url && typeof img.url === 'string' && img.url.trim().length > 0)
+          .map((img: any) => img.url.trim())
+        const coverImg = images.find((img: any) => img.isCover)
+        chosenCoverIndex = coverImg ? images.indexOf(coverImg) : 0
       }
+    } else if (image && typeof image === 'string' && image.trim().length > 0) {
+      imageUrls = [image.trim()]
+      chosenCoverIndex = 0
+    }
 
-      return created
-    })
+    let result
+    try {
+      result = await prisma.$transaction(async (tx) => {
+        const created = await tx.product.create({
+          data: {
+            name,
+            description,
+            price: parseFloat(price),
+            image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
+            category: category || null,
+            stock: parseInt(stock),
+            featured: featured || false,
+          },
+        })
+
+        if (imageUrls && imageUrls.length > 0) {
+          await tx.productImage.createMany({
+            data: imageUrls.map((url, idx) => ({
+              productId: created.id,
+              url,
+              isCover: idx === chosenCoverIndex,
+              position: idx,
+            })),
+          })
+        }
+
+        return created
+      })
+    } catch (error: any) {
+      // If images table doesn't exist, create product without images
+      if (error?.message?.includes('productimage') || error?.message?.includes('does not exist')) {
+        result = await prisma.product.create({
+          data: {
+            name,
+            description,
+            price: parseFloat(price),
+            image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
+            category: category || null,
+            stock: parseInt(stock),
+            featured: featured || false,
+          },
+        })
+      } else {
+        throw error
+      }
+    }
 
     return NextResponse.json({ product: result })
   } catch (error) {
