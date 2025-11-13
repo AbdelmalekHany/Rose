@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useCart } from '@/hooks/useCart'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface ProductImage {
@@ -38,7 +38,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       ? [product.image]
       : []
 
-  const displayImage = allImages[selectedImageIndex] || null
+  // Ensure selectedImageIndex is within bounds
+  const safeIndex = allImages.length > 0 
+    ? Math.min(selectedImageIndex, allImages.length - 1)
+    : 0
+  const displayImage = allImages[safeIndex] || null
+
+  // Reset selectedImageIndex if it's out of bounds (e.g., after product update)
+  useEffect(() => {
+    if (allImages.length > 0 && selectedImageIndex >= allImages.length) {
+      setSelectedImageIndex(0)
+    }
+  }, [allImages.length, selectedImageIndex])
 
   const handleAddToCart = async () => {
     if (product.stock === 0) {
@@ -101,7 +112,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                     setImageError(false)
                   }}
                   className={`aspect-square relative rounded-lg overflow-hidden border-2 transition-all ${
-                    selectedImageIndex === index
+                    safeIndex === index
                       ? 'border-rose-600 ring-2 ring-rose-200'
                       : 'border-gray-200 hover:border-rose-300'
                   }`}

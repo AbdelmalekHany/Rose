@@ -20,16 +20,37 @@ export default async function AdminProductsPage() {
         images: {
           orderBy: { position: 'asc' },
         },
-      },
+      } as any,
     })
+    if (!products) products = []
   } catch (error: any) {
-    // If images table doesn't exist yet, fetch without images
-    if (error?.message?.includes('productimage') || error?.message?.includes('does not exist')) {
+    // If images relation fails, fetch without images
+    const errorMessage = error?.message?.toLowerCase() || '';
+    if (
+      errorMessage.includes('productimage') ||
+      errorMessage.includes('does not exist') ||
+      errorMessage.includes('unknown argument') ||
+      errorMessage.includes('relation') ||
+      error?.code === 'P2009' ||
+      error?.code === 'P2014'
+    ) {
+      console.log("Images relation not available, fetching products without images");
       products = await prisma.product.findMany({
         orderBy: { createdAt: 'desc' },
       })
+      if (!products) products = []
     } else {
-      throw error
+      console.error("Error fetching admin products:", error);
+      // Last resort fallback
+      try {
+        products = await prisma.product.findMany({
+          orderBy: { createdAt: 'desc' },
+        })
+        if (!products) products = []
+      } catch (fallbackError) {
+        console.error("Fallback query also failed:", fallbackError);
+        products = []
+      }
     }
   }
 

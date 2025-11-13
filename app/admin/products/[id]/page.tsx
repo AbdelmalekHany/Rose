@@ -11,16 +11,30 @@ async function getProduct(id: string) {
     if (isNaN(productId)) {
       return null
     }
-    const product = await prisma.product.findUnique({
-      where: { id: productId },
-      include: {
-        images: {
-          orderBy: { position: 'asc' },
-        },
-      },
-    })
-    return product
+    
+    // Try to get product with images first
+    try {
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        include: {
+          images: {
+            orderBy: { position: 'asc' },
+          },
+        } as any,
+      })
+      return product
+    } catch (error: any) {
+      // If images table doesn't exist, get product without images
+      if (error?.message?.includes('productimage') || error?.message?.includes('does not exist')) {
+        const product = await prisma.product.findUnique({
+          where: { id: productId },
+        })
+        return product
+      }
+      throw error
+    }
   } catch (error) {
+    console.error('Error fetching product:', error)
     return null
   }
 }

@@ -41,7 +41,8 @@ export default function ProductForm({ product }: { product?: Product }) {
         .sort((a, b) => a.position - b.position)
         .map(img => img.url)
     }
-    return product?.image ? [product.image] : []
+    // Always have at least one empty field for new products
+    return product?.image ? [product.image] : ['']
   })
   const [coverIndex, setCoverIndex] = useState<number>(() => {
     if (product?.images && product.images.length > 0) {
