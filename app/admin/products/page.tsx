@@ -12,7 +12,7 @@ export default async function AdminProductsPage() {
     redirect('/')
   }
 
-  let products
+  let products: any[] = []
   try {
     products = await prisma.product.findMany({
       orderBy: { createdAt: 'desc' },
