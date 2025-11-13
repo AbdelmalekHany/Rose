@@ -20,9 +20,20 @@ export const authOptions: NextAuthOptions = {
 
           const email = credentials.email.trim().toLowerCase()
 
-          const user = await prisma.user.findUnique({
-            where: { email }
-          })
+          let user
+          try {
+            user = await prisma.user.findUnique({
+              where: { email }
+            })
+          } catch (dbError: any) {
+            console.error('Database error finding user:', dbError)
+            console.error('Database error details:', {
+              message: dbError?.message,
+              code: dbError?.code,
+            })
+            // Return null instead of throwing to allow NextAuth to handle gracefully
+            return null
+          }
 
           if (!user) {
             console.log('User not found:', email)
