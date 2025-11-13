@@ -60,22 +60,13 @@ export default function ProductForm({ product }: { product?: Product }) {
     setLoading(true)
 
     try {
-      // Filter out empty image URLs and prepare images data
-      const validImages = images
-        .filter(img => img.url.trim() !== '')
-        .map((img, index) => ({
-          url: img.url.trim(),
-          isCover: img.isCover,
-          position: index,
-        }))
-
+      // Filter out empty image URLs
+      const validImages = images.filter(url => url.trim() !== '')
+      
       const url = product
         ? `/api/admin/products/${String(product.id)}`
         : '/api/admin/products'
       const method = product ? 'PUT' : 'POST'
-
-      // Filter out empty image URLs
-      const validImages = images.filter(url => url.trim() !== '')
       
       const res = await fetch(url, {
         method,
