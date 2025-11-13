@@ -24,7 +24,15 @@ export async function POST(request: Request) {
       })
     } catch (dbError: any) {
       console.error('Database error checking existing user:', dbError)
-      throw new Error(`Database connection error: ${dbError?.message || 'Unknown error'}`)
+      console.error('Error code:', dbError?.code)
+      console.error('Error meta:', dbError?.meta)
+      return NextResponse.json(
+        { 
+          error: 'Database query failed',
+          details: process.env.NODE_ENV === 'development' ? dbError?.message : undefined
+        },
+        { status: 500 }
+      )
     }
 
     if (existingUser) {

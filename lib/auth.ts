@@ -30,6 +30,7 @@ export const authOptions: NextAuthOptions = {
             console.error('Database error details:', {
               message: dbError?.message,
               code: dbError?.code,
+              meta: dbError?.meta,
             })
             // Return null instead of throwing to allow NextAuth to handle gracefully
             return null
