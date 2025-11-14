@@ -11,8 +11,11 @@ export default function CheckoutPage() {
   const router = useRouter()
   const { cartItems, refreshCart } = useCart()
   const [shippingAddress, setShippingAddress] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     if (!session) {
@@ -48,12 +51,28 @@ export default function CheckoutPage() {
       return
     }
 
+    if (!phoneNumber.trim()) {
+      setError('Please enter a phone number')
+      setLoading(false)
+      return
+    }
+
+    // Basic phone number validation
+    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/
+    if (!phoneRegex.test(phoneNumber.replace(/\s/g, ''))) {
+      setError('Please enter a valid phone number')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           shippingAddress,
+          phoneNumber,
+          notes: notes.trim() || undefined,
           cartItems: cartItems.map(item => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -71,23 +90,59 @@ export default function CheckoutPage() {
         return
       }
 
-      // Clear cart and redirect
+      // Clear cart and show success message
       await refreshCart()
-      router.push(`/orders/${data.orderId}`)
+      setSuccess(true)
+      
+      // Redirect to orders page after 3 seconds
+      setTimeout(() => {
+        router.push('/orders')
+      }, 3000)
     } catch (error) {
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
   }
 
+  if (success) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="card p-8 text-center">
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Sent Successfully!</h2>
+              <p className="text-lg text-gray-600">
+                We will contact you soon to confirm your order.
+              </p>
+            </div>
+            <p className="text-sm text-gray-500 mb-4">
+              Redirecting to your orders page...
+            </p>
+            <button
+              onClick={() => router.push('/orders')}
+              className="btn btn-primary"
+            >
+              View My Orders
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+      <h1 className="text-3xl font-bold mb-8">Send Order</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <form onSubmit={handleSubmit} className="card p-6 space-y-6">
-            <h2 className="text-xl font-bold mb-4">Shipping Information</h2>
+            <h2 className="text-xl font-bold mb-4">Contact Information</h2>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -96,8 +151,26 @@ export default function CheckoutPage() {
             )}
 
             <div>
+              <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                className="input"
+                placeholder="e.g., +20 123 456 7890"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                We'll use this number to contact you about your order
+              </p>
+            </div>
+
+            <div>
               <label htmlFor="address" className="block text-sm font-medium mb-2">
-                Shipping Address
+                House Address <span className="text-red-500">*</span>
               </label>
               <textarea
                 id="address"
@@ -105,8 +178,24 @@ export default function CheckoutPage() {
                 onChange={(e) => setShippingAddress(e.target.value)}
                 required
                 className="input min-h-[100px]"
-                placeholder="Enter your full shipping address"
+                placeholder="Enter your full house address including street, building, floor, apartment number, etc."
               />
+            </div>
+
+            <div>
+              <label htmlFor="notes" className="block text-sm font-medium mb-2">
+                Special Instructions (Optional)
+              </label>
+              <textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="input min-h-[80px]"
+                placeholder="Any special delivery instructions or notes for your order..."
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Add any special requests or delivery instructions
+              </p>
             </div>
 
             <div className="border-t pt-6">
@@ -147,7 +236,7 @@ export default function CheckoutPage() {
               disabled={loading || cartItems.length === 0}
               className="w-full btn btn-primary disabled:opacity-50"
             >
-              {loading ? 'Processing...' : 'Place Order'}
+              {loading ? 'Sending Order...' : 'Send Order'}
             </button>
           </form>
         </div>

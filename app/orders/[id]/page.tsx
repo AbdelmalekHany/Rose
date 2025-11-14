@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
+import CancelOrderButton from '@/components/CancelOrderButton'
 
 async function getOrder(orderId: string, userId: string) {
   try {
@@ -77,8 +78,29 @@ export default async function OrderPage({
         </div>
 
         <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Shipping Address</h2>
-          <p className="text-gray-700 whitespace-pre-line">{order.shippingAddress}</p>
+          <h2 className="text-xl font-bold mb-4">Contact Information</h2>
+          <div className="space-y-2">
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Phone Number</p>
+              <p className="text-gray-700">
+                <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
+                  {order.phoneNumber}
+                </a>
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Shipping Address</p>
+              <p className="text-gray-700 whitespace-pre-line">{order.shippingAddress}</p>
+            </div>
+            {order.notes && (
+              <div>
+                <p className="text-sm text-gray-600 mb-1">Special Instructions</p>
+                <p className="text-gray-700 whitespace-pre-line bg-yellow-50 p-3 rounded border border-yellow-200">
+                  {order.notes}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div>
@@ -123,7 +145,10 @@ export default async function OrderPage({
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 flex gap-4">
+          {(order.status === 'PENDING' || order.status === 'PROCESSING') && (
+            <CancelOrderButton orderId={order.id} />
+          )}
           <a href="/" className="btn btn-primary">
             Continue Shopping
           </a>

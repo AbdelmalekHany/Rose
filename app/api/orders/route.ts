@@ -13,11 +13,11 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { shippingAddress, cartItems, total } = body
+    const { shippingAddress, phoneNumber, notes, cartItems, total } = body
 
-    if (!shippingAddress || !cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+    if (!shippingAddress || !phoneNumber || !cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return NextResponse.json(
-        { error: 'Invalid order data' },
+        { error: 'Invalid order data. Please provide shipping address, phone number, and cart items.' },
         { status: 400 }
       )
     }
@@ -78,6 +78,8 @@ export async function POST(request: Request) {
           userId: session.user.id,
           total: computedTotal,
           shippingAddress,
+          phoneNumber,
+          notes: notes || null,
           status: 'PENDING',
           paymentStatus: 'PENDING',
         },

@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import CancelOrderButton from '@/components/CancelOrderButton'
 
 async function getUserOrders(userId: string) {
   try {
@@ -85,7 +86,7 @@ export default async function OrdersPage() {
                 <p className="text-sm text-gray-600 mb-2">
                   {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {order.items.slice(0, 3).map((item) => (
                     <span
                       key={item.id}
@@ -100,6 +101,11 @@ export default async function OrdersPage() {
                     </span>
                   )}
                 </div>
+                {(order.status === 'PENDING' || order.status === 'PROCESSING') && (
+                  <div className="mt-3">
+                    <CancelOrderButton orderId={order.id} />
+                  </div>
+                )}
               </div>
             </Link>
           ))}

@@ -10,6 +10,7 @@ interface Order {
   status: string
   paymentStatus: string
   shippingAddress: string
+  phoneNumber: string
   createdAt: Date
   user: {
     name: string | null
@@ -28,6 +29,8 @@ interface Order {
 export default function OrdersAdminList({ orders }: { orders: Order[] }) {
   const router = useRouter()
   const [updating, setUpdating] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('ALL')
 
   const handleStatusUpdate = async (orderId: string, newStatus: string) => {
     setUpdating(orderId)
@@ -50,8 +53,113 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
     }
   }
 
+  const handleQuickAction = async (orderId: string, action: string) => {
+    setUpdating(orderId)
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: action }),
+      })
+
+      if (res.ok) {
+        router.refresh()
+      } else {
+        alert('Failed to update order status')
+      }
+    } catch (error) {
+      alert('An error occurred')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  // Filter orders
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch =
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.phoneNumber.includes(searchTerm) ||
+      order.shippingAddress.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter
+    
+    return matchesSearch && matchesStatus
+  })
+
+  // Calculate statistics
+  const stats = {
+    total: orders.length,
+    pending: orders.filter((o) => o.status === 'PENDING').length,
+    processing: orders.filter((o) => o.status === 'PROCESSING').length,
+    shipped: orders.filter((o) => o.status === 'SHIPPED').length,
+    delivered: orders.filter((o) => o.status === 'DELIVERED').length,
+    cancelled: orders.filter((o) => o.status === 'CANCELLED').length,
+  }
+
   return (
-    <div className="card overflow-hidden">
+    <div className="space-y-6">
+      {/* Statistics */}
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div className="card p-4 text-center">
+          <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+          <div className="text-sm text-gray-600">Total</div>
+        </div>
+        <div className="card p-4 text-center">
+          <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+          <div className="text-sm text-gray-600">Pending</div>
+        </div>
+        <div className="card p-4 text-center">
+          <div className="text-2xl font-bold text-blue-600">{stats.processing}</div>
+          <div className="text-sm text-gray-600">Processing</div>
+        </div>
+        <div className="card p-4 text-center">
+          <div className="text-2xl font-bold text-purple-600">{stats.shipped}</div>
+          <div className="text-sm text-gray-600">Shipped</div>
+        </div>
+        <div className="card p-4 text-center">
+          <div className="text-2xl font-bold text-green-600">{stats.delivered}</div>
+          <div className="text-sm text-gray-600">Delivered</div>
+        </div>
+        <div className="card p-4 text-center">
+          <div className="text-2xl font-bold text-red-600">{stats.cancelled}</div>
+          <div className="text-sm text-gray-600">Cancelled</div>
+        </div>
+      </div>
+
+      {/* Search and Filter */}
+      <div className="card p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Search Orders</label>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by ID, name, email, phone, or address..."
+              className="input w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Filter by Status</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input w-full"
+            >
+              <option value="ALL">All Statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="PROCESSING">Processing</option>
+              <option value="SHIPPED">Shipped</option>
+              <option value="DELIVERED">Delivered</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="card overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50">
@@ -61,6 +169,12 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Customer
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Phone
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Address
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Total
@@ -80,14 +194,14 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {orders.length === 0 ? (
+            {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                  No orders found
+                <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
+                  {orders.length === 0 ? 'No orders found' : 'No orders match your search'}
                 </td>
               </tr>
             ) : (
-              orders.map((order) => (
+              filteredOrders.map((order) => (
                 <tr key={order.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link
@@ -101,22 +215,64 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
                     <div>{order.user.name || 'N/A'}</div>
                     <div className="text-sm text-gray-500">{order.user.email}</div>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
+                      {order.phoneNumber}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4 max-w-xs">
+                    <div className="text-sm text-gray-600 truncate" title={order.shippingAddress}>
+                      {order.shippingAddress}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap font-semibold">
                     {order.total.toFixed(2)} EGP
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <select
-                      value={order.status}
-                      onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                      disabled={updating === order.id}
-                      className="border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-50"
-                    >
-                      <option value="PENDING">Pending</option>
-                      <option value="PROCESSING">Processing</option>
-                      <option value="SHIPPED">Shipped</option>
-                      <option value="DELIVERED">Delivered</option>
-                      <option value="CANCELLED">Cancelled</option>
-                    </select>
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={order.status}
+                        onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                        disabled={updating === order.id}
+                        className="border border-gray-300 rounded px-2 py-1 text-sm disabled:opacity-50 flex-1"
+                      >
+                        <option value="PENDING">Pending</option>
+                        <option value="PROCESSING">Processing</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
+                      </select>
+                      {order.status === 'PENDING' && (
+                        <button
+                          onClick={() => handleQuickAction(order.id, 'PROCESSING')}
+                          disabled={updating === order.id}
+                          className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 disabled:opacity-50"
+                          title="Mark as Processing"
+                        >
+                          →
+                        </button>
+                      )}
+                      {order.status === 'PROCESSING' && (
+                        <button
+                          onClick={() => handleQuickAction(order.id, 'SHIPPED')}
+                          disabled={updating === order.id}
+                          className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 disabled:opacity-50"
+                          title="Mark as Shipped"
+                        >
+                          →
+                        </button>
+                      )}
+                      {order.status === 'SHIPPED' && (
+                        <button
+                          onClick={() => handleQuickAction(order.id, 'DELIVERED')}
+                          disabled={updating === order.id}
+                          className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 disabled:opacity-50"
+                          title="Mark as Delivered"
+                        >
+                          ✓
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span

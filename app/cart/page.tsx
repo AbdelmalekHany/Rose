@@ -140,7 +140,7 @@ export default function CartPage() {
                 href="/checkout"
                 className="w-full btn btn-primary block text-center mb-4"
               >
-                Proceed to Checkout
+                Send Order
               </Link>
               
               <Link
