@@ -304,6 +304,7 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
           </tbody>
         </table>
       </div>
+      </div>
     </div>
   )
 }
