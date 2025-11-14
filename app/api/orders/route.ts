@@ -95,6 +95,7 @@ export async function POST(request: Request) {
       })
       
       console.log('Order created with ID:', newOrder.id)
+      console.log('Order details:', JSON.stringify(newOrder, null, 2))
 
       await tx.orderItem.createMany({
         data: normalizedItems.map((item) => {
@@ -124,6 +125,28 @@ export async function POST(request: Request) {
       return newOrder
     })
 
+    // Verify the order was actually saved
+    const verifyOrder = await prisma.order.findUnique({
+      where: { id: order.id },
+      include: {
+        items: true,
+      },
+    })
+
+    console.log('Order verification:', {
+      found: !!verifyOrder,
+      orderId: order.id,
+      itemsCount: verifyOrder?.items.length || 0,
+    })
+
+    if (!verifyOrder) {
+      console.error('CRITICAL: Order was not found after creation!')
+      return NextResponse.json(
+        { error: 'Order was created but could not be verified' },
+        { status: 500 }
+      )
+    }
+
     revalidatePath('/orders')
     revalidatePath('/admin/orders')
 
@@ -131,6 +154,8 @@ export async function POST(request: Request) {
       success: true,
       orderId: order.id,
       total: computedTotal,
+      verified: true,
+      itemsCount: verifyOrder.items.length,
     })
   } catch (error: any) {
     console.error('Error creating order:', error)
