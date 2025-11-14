@@ -97,7 +97,7 @@ export async function POST(request: Request) {
             userId: session.user.id,
             total: computedTotal,
             shippingAddress,
-            phoneNumber,
+            phoneNumber: phoneNumber || null,
             notes: notes || null,
             status: 'PENDING',
             paymentStatus: 'PENDING',
