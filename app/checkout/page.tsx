@@ -24,10 +24,11 @@ export default function CheckoutPage() {
   }, [session, router])
 
   useEffect(() => {
-    if (cartItems.length === 0 && session) {
+    // Only redirect if cart is empty AND we're not in the middle of submitting
+    if (cartItems.length === 0 && session && !loading && !success) {
       router.push('/cart')
     }
-  }, [cartItems, session, router])
+  }, [cartItems, session, router, loading, success])
 
   if (!session) {
     return null
