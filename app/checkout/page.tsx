@@ -23,18 +23,23 @@ export default function CheckoutPage() {
     }
   }, [session, router])
 
-  // Only redirect if cart is empty AND we're not in the middle of submitting
+  // Only redirect if cart is truly empty (after allowing time for cart to load)
+  const [cartLoaded, setCartLoaded] = useState(false)
+  
   useEffect(() => {
-    if (cartItems.length === 0 && session && !loading && !success) {
-      // Add a small delay to avoid race condition with cart fetching
-      const timer = setTimeout(() => {
-        if (cartItems.length === 0) {
-          router.push('/cart')
-        }
-      }, 500)
-      return () => clearTimeout(timer)
+    // Give cart time to load
+    const timer = setTimeout(() => {
+      setCartLoaded(true)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    // Only redirect if cart is empty AFTER it has had time to load
+    if (cartLoaded && cartItems.length === 0 && session && !loading && !success) {
+      router.push('/cart')
     }
-  }, [cartItems.length, session, loading, success, router])
+  }, [cartLoaded, cartItems.length, session, loading, success, router])
 
   if (!session) {
     return null
