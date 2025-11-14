@@ -31,7 +31,24 @@ export default function CheckoutPage() {
   }, [cartItems, session, router, loading, success])
 
   if (!session) {
-    return null
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <p className="text-center text-gray-600 mb-4">Your cart is empty.</p>
+        <div className="text-center">
+          <button onClick={() => router.push('/cart')} className="btn btn-primary">
+            Go to Cart
+          </button>
+        </div>
+      </div>
+    )
   }
 
   const subtotal = cartItems.reduce(
