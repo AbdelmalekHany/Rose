@@ -99,30 +99,30 @@ export async function POST(request: Request) {
         console.log('Order created with ID:', newOrder.id)
         console.log('Order details:', JSON.stringify(newOrder, null, 2))
 
-      await tx.orderItem.createMany({
-        data: normalizedItems.map((item) => {
-          const product = products.find((p) => p.id === item.productId)!
-          return {
-            orderId: newOrder.id,
-            productId: product.id,
-            quantity: item.quantity,
-            price: product.price,
-          }
-        }),
-      })
+        await tx.orderItem.createMany({
+          data: normalizedItems.map((item) => {
+            const product = products.find((p) => p.id === item.productId)!
+            return {
+              orderId: newOrder.id,
+              productId: product.id,
+              quantity: item.quantity,
+              price: product.price,
+            }
+          }),
+        })
 
-      await Promise.all(
-        normalizedItems.map((item) =>
-          tx.product.update({
-            where: { id: item.productId },
-            data: { stock: { decrement: item.quantity } },
-          })
+        await Promise.all(
+          normalizedItems.map((item) =>
+            tx.product.update({
+              where: { id: item.productId },
+              data: { stock: { decrement: item.quantity } },
+            })
+          )
         )
-      )
 
-      await tx.cartItem.deleteMany({
-        where: { userId: session.user.id },
-      })
+        await tx.cartItem.deleteMany({
+          where: { userId: session.user.id },
+        })
 
         return newOrder
       })
