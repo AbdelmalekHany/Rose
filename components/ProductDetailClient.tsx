@@ -1,73 +1,79 @@
-'use client'
+// ProductDetailClient.tsx
+"use client";
 
-import Image from 'next/image'
-import { useCart } from '@/hooks/useCart'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import Image from "next/image";
+import { useCart } from "@/hooks/useCart";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface ProductImage {
-  id: number
-  url: string
-  position: number
-  isCover?: boolean
+  id: number | string;
+  url: string;
+  position: number;
+  isCover?: boolean;
 }
 
 interface Product {
-  id: number | string
-  name: string
-  description: string | null
-  price: number
-  image?: string | null
-  category: string | null
-  stock: number
-  images?: ProductImage[]
+  id: number | string;
+  name: string;
+  description: string | null;
+  price: number;
+  image?: string | null;
+  category: string | null;
+  stock: number;
+  images?: ProductImage[];
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
-  const { addToCart } = useCart()
-  const [quantity, setQuantity] = useState(1)
-  const [adding, setAdding] = useState(false)
-  const [imageError, setImageError] = useState(false)
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const router = useRouter()
+  const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const router = useRouter();
 
-  // Get all images - prefer images array, fall back to product.image
-  const allImages = product.images && product.images.length > 0
-    ? product.images.map(img => img.url)
-    : product.image
+  // Collect all images, prefer product.images over product.image
+  const allImages =
+    product.images && product.images.length > 0
+      ? product.images.map((img) => img.url)
+      : product.image
       ? [product.image]
-      : []
+      : [];
 
-  // Ensure selectedImageIndex is within bounds
-  const safeIndex = allImages.length > 0 
-    ? Math.min(selectedImageIndex, allImages.length - 1)
-    : 0
-  const displayImage = allImages[safeIndex] || null
-
-  // Reset selectedImageIndex if it's out of bounds (e.g., after product update)
+  // Determine initial cover image if any
   useEffect(() => {
-    if (allImages.length > 0 && selectedImageIndex >= allImages.length) {
-      setSelectedImageIndex(0)
+    if (product.images && product.images.length > 0) {
+      const coverIndex = product.images.findIndex((img) => img.isCover);
+      setSelectedImageIndex(coverIndex !== -1 ? coverIndex : 0);
+    } else {
+      setSelectedImageIndex(0);
     }
-  }, [allImages.length, selectedImageIndex])
+  }, [product.images]);
+
+  // Ensure selected index is valid
+  const safeIndex =
+    allImages.length > 0
+      ? Math.min(selectedImageIndex, allImages.length - 1)
+      : 0;
+  const displayImage = allImages[safeIndex] || null;
 
   const handleAddToCart = async () => {
     if (product.stock === 0) {
-      alert('This product is out of stock')
-      return
+      alert("This product is out of stock");
+      return;
     }
 
-    setAdding(true)
-    const success = await addToCart(String(product.id), quantity)
-    setAdding(false)
-    
+    setAdding(true);
+    const success = await addToCart(String(product.id), quantity);
+    setAdding(false);
+
     if (success) {
-      const goToCart = confirm('Added to cart! Would you like to go to cart?')
+      const goToCart = confirm("Added to cart! Would you like to go to cart?");
       if (goToCart) {
-        router.push('/cart')
+        router.push("/cart");
       }
     }
-  }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -91,7 +97,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 alt={product.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none'
+                  e.currentTarget.style.display = "none";
                 }}
               />
             ) : (
@@ -100,7 +106,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </div>
             )}
           </div>
-          
+
           {/* Thumbnail Gallery */}
           {allImages.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
@@ -108,13 +114,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 <button
                   key={index}
                   onClick={() => {
-                    setSelectedImageIndex(index)
-                    setImageError(false)
+                    setSelectedImageIndex(index);
+                    setImageError(false);
                   }}
                   className={`aspect-square relative rounded-lg overflow-hidden border-2 transition-all ${
                     safeIndex === index
-                      ? 'border-rose-600 ring-2 ring-rose-200'
-                      : 'border-gray-200 hover:border-rose-300'
+                      ? "border-rose-600 ring-2 ring-rose-200"
+                      : "border-gray-200 hover:border-rose-300"
                   }`}
                 >
                   <Image
@@ -130,16 +136,18 @@ export default function ProductDetailClient({ product }: { product: Product }) {
           )}
         </div>
 
-        {/* Details */}
+        {/* Product Details */}
         <div>
           {product.category && (
-            <span className="text-rose-600 font-semibold">{product.category}</span>
+            <span className="text-rose-600 font-semibold">
+              {product.category}
+            </span>
           )}
           <h1 className="text-4xl font-bold mt-2 mb-4">{product.name}</h1>
           {product.description && (
             <p className="text-gray-600 text-lg mb-6">{product.description}</p>
           )}
-          
+
           <div className="mb-6">
             <span className="text-4xl font-bold text-rose-600">
               {product.price.toFixed(2)} EGP
@@ -152,9 +160,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 ✓ In Stock ({product.stock} available)
               </span>
             ) : (
-              <span className="text-red-600 font-semibold">
-                ✗ Out of Stock
-              </span>
+              <span className="text-red-600 font-semibold">✗ Out of Stock</span>
             )}
           </div>
 
@@ -169,9 +175,13 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 >
                   -
                 </button>
-                <span className="text-lg font-semibold w-12 text-center">{quantity}</span>
+                <span className="text-lg font-semibold w-12 text-center">
+                  {quantity}
+                </span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                  onClick={() =>
+                    setQuantity(Math.min(product.stock, quantity + 1))
+                  }
                   className="w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-100"
                   disabled={quantity >= product.stock}
                 >
@@ -186,7 +196,11 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             disabled={product.stock === 0 || adding}
             className="w-full btn btn-primary text-lg py-4 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
           >
-            {adding ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            {adding
+              ? "Adding..."
+              : product.stock === 0
+              ? "Out of Stock"
+              : "Add to Cart"}
           </button>
 
           <div className="border-t pt-6 mt-6">
@@ -199,6 +213,5 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
