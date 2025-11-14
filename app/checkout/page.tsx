@@ -23,23 +23,11 @@ export default function CheckoutPage() {
     }
   }, [session, router])
 
-  // Only redirect if cart is truly empty (after allowing time for cart to load)
-  const [cartLoaded, setCartLoaded] = useState(false)
-  
   useEffect(() => {
-    // Give cart time to load
-    const timer = setTimeout(() => {
-      setCartLoaded(true)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    // Only redirect if cart is empty AFTER it has had time to load
-    if (cartLoaded && cartItems.length === 0 && session && !loading && !success) {
+    if (cartItems.length === 0 && session) {
       router.push('/cart')
     }
-  }, [cartLoaded, cartItems.length, session, loading, success, router])
+  }, [cartItems, session, router])
 
   if (!session) {
     return null
@@ -98,8 +86,10 @@ export default function CheckoutPage() {
 
       if (!res.ok) {
         console.error('Order creation failed:', data)
-        setError(data.error || data.details || 'Failed to create order. Please check the console for details.')
+        const errorMessage = data.error || data.details || 'Failed to create order. Please check the console for details.'
+        setError(errorMessage)
         setLoading(false)
+        // Don't clear cart if order failed
         return
       }
 
@@ -119,9 +109,11 @@ export default function CheckoutPage() {
           window.location.href = '/orders'
         }, 100)
       }, 2000)
-    } catch (error) {
-      setError('An error occurred. Please try again.')
+    } catch (error: any) {
+      console.error('Network error creating order:', error)
+      setError(`Network error: ${error.message || 'Failed to connect to server. Please check your connection and try again.'}`)
       setLoading(false)
+      // Don't clear cart if there was a network error
     }
   }
 

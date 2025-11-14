@@ -81,21 +81,23 @@ export async function POST(request: Request) {
       itemCount: normalizedItems.length,
     })
 
-    const order = await prisma.$transaction(async (tx) => {
-      const newOrder = await tx.order.create({
-        data: {
-          userId: session.user.id,
-          total: computedTotal,
-          shippingAddress,
-          phoneNumber,
-          notes: notes || null,
-          status: 'PENDING',
-          paymentStatus: 'PENDING',
-        },
-      })
-      
-      console.log('Order created with ID:', newOrder.id)
-      console.log('Order details:', JSON.stringify(newOrder, null, 2))
+    let order
+    try {
+      order = await prisma.$transaction(async (tx) => {
+        const newOrder = await tx.order.create({
+          data: {
+            userId: session.user.id,
+            total: computedTotal,
+            shippingAddress,
+            phoneNumber,
+            notes: notes || null,
+            status: 'PENDING',
+            paymentStatus: 'PENDING',
+          },
+        })
+        
+        console.log('Order created with ID:', newOrder.id)
+        console.log('Order details:', JSON.stringify(newOrder, null, 2))
 
       await tx.orderItem.createMany({
         data: normalizedItems.map((item) => {
@@ -122,8 +124,26 @@ export async function POST(request: Request) {
         where: { userId: session.user.id },
       })
 
-      return newOrder
-    })
+        return newOrder
+      })
+    } catch (dbError: any) {
+      console.error('Database error creating order:', dbError)
+      console.error('Error code:', dbError?.code)
+      console.error('Error meta:', dbError?.meta)
+      
+      // Check if it's a schema mismatch error
+      if (dbError?.code === 'P2002' || dbError?.message?.includes('phoneNumber') || dbError?.message?.includes('Unknown column')) {
+        return NextResponse.json(
+          { 
+            error: 'Database schema mismatch. The phoneNumber field is missing. Please run: npx prisma db push',
+            details: process.env.NODE_ENV === 'development' ? dbError.message : undefined,
+          },
+          { status: 500 }
+        )
+      }
+      
+      throw dbError // Re-throw to be caught by outer catch
+    }
 
     // Verify the order was actually saved
     const verifyOrder = await prisma.order.findUnique({
