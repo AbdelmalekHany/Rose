@@ -10,7 +10,7 @@ interface Order {
   status: string
   paymentStatus: string
   shippingAddress: string
-  phoneNumber: string | null
+  phoneNumber: string
   createdAt: Date
   user: {
     name: string | null
@@ -80,7 +80,7 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.phoneNumber.includes(searchTerm) ||
+      (order.phoneNumber && order.phoneNumber.includes(searchTerm)) ||
       order.shippingAddress.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter
@@ -216,13 +216,9 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
                     <div className="text-sm text-gray-500">{order.user.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {order.phoneNumber ? (
-                      <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
-                        {order.phoneNumber}
-                      </a>
-                    ) : (
-                      <span className="text-gray-400">N/A</span>
-                    )}
+                    <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
+                      {order.phoneNumber}
+                    </a>
                   </td>
                   <td className="px-6 py-4 max-w-xs">
                     <div className="text-sm text-gray-600 truncate" title={order.shippingAddress}>

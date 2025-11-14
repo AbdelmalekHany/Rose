@@ -80,16 +80,14 @@ export default async function OrderPage({
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Contact Information</h2>
           <div className="space-y-2">
-            {order.phoneNumber && (
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Phone Number</p>
-                <p className="text-gray-700">
-                  <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
-                    {order.phoneNumber}
-                  </a>
-                </p>
-              </div>
-            )}
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Phone Number</p>
+              <p className="text-gray-700">
+                <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
+                  {order.phoneNumber}
+                </a>
+              </p>
+            </div>
             <div>
               <p className="text-sm text-gray-600 mb-1">Shipping Address</p>
               <p className="text-gray-700 whitespace-pre-line">{order.shippingAddress}</p>
