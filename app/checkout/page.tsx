@@ -23,11 +23,18 @@ export default function CheckoutPage() {
     }
   }, [session, router])
 
+  // Only redirect if cart is empty AND we're not in the middle of submitting
   useEffect(() => {
-    if (cartItems.length === 0 && session) {
-      router.push('/cart')
+    if (cartItems.length === 0 && session && !loading && !success) {
+      // Add a small delay to avoid race condition with cart fetching
+      const timer = setTimeout(() => {
+        if (cartItems.length === 0) {
+          router.push('/cart')
+        }
+      }, 500)
+      return () => clearTimeout(timer)
     }
-  }, [cartItems, session, router])
+  }, [cartItems.length, session, loading, success, router])
 
   if (!session) {
     return null
