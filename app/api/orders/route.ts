@@ -72,6 +72,15 @@ export async function POST(request: Request) {
       })
     }
 
+    console.log('Creating order with data:', {
+      userId: session.user.id,
+      total: computedTotal,
+      shippingAddress,
+      phoneNumber,
+      notes: notes || null,
+      itemCount: normalizedItems.length,
+    })
+
     const order = await prisma.$transaction(async (tx) => {
       const newOrder = await tx.order.create({
         data: {
@@ -84,6 +93,8 @@ export async function POST(request: Request) {
           paymentStatus: 'PENDING',
         },
       })
+      
+      console.log('Order created with ID:', newOrder.id)
 
       await tx.orderItem.createMany({
         data: normalizedItems.map((item) => {
@@ -123,8 +134,17 @@ export async function POST(request: Request) {
     })
   } catch (error: any) {
     console.error('Error creating order:', error)
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack,
+    })
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { 
+        error: error.message || 'Internal server error',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      },
       { status: 500 }
     )
   }

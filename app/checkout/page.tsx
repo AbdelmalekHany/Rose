@@ -85,10 +85,13 @@ export default function CheckoutPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || 'Failed to create order')
+        console.error('Order creation failed:', data)
+        setError(data.error || data.details || 'Failed to create order. Please check the console for details.')
         setLoading(false)
         return
       }
+
+      console.log('Order created successfully:', data)
 
       // Show success message first
       setSuccess(true)
@@ -96,12 +99,14 @@ export default function CheckoutPage() {
       // Clear cart after showing success
       await refreshCart()
       
-      // Redirect to orders page after 3 seconds
-      setTimeout(async () => {
-        // Force refresh before navigating
-        router.refresh()
-        router.push('/orders')
-      }, 3000)
+      // Redirect immediately to orders page and force refresh
+      setTimeout(() => {
+        router.push('/orders?refresh=' + Date.now())
+        // Force a hard refresh after navigation
+        setTimeout(() => {
+          window.location.href = '/orders'
+        }, 100)
+      }, 2000)
     } catch (error) {
       setError('An error occurred. Please try again.')
       setLoading(false)
