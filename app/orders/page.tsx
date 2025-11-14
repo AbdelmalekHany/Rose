@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import CancelOrderButton from '@/components/CancelOrderButton'
-import { revalidatePath } from 'next/cache'
 
 async function getUserOrders(userId: string) {
   try {
