@@ -67,7 +67,7 @@ model Order {
   status          String      @default("PENDING")
   paymentStatus   String      @default("PENDING")
   shippingAddress String
-  phoneNumber     String
+  phoneNumber     String?
   notes           String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

@@ -10,7 +10,7 @@ interface Order {
   status: string
   paymentStatus: string
   shippingAddress: string
-  phoneNumber: string
+  phoneNumber: string | null
   createdAt: Date
   user: {
     name: string | null
@@ -216,9 +216,13 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
                     <div className="text-sm text-gray-500">{order.user.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
-                      {order.phoneNumber}
-                    </a>
+                    {order.phoneNumber ? (
+                      <a href={`tel:${order.phoneNumber}`} className="text-rose-600 hover:text-rose-900">
+                        {order.phoneNumber}
+                      </a>
+                    ) : (
+                      <span className="text-gray-400">N/A</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 max-w-xs">
                     <div className="text-sm text-gray-600 truncate" title={order.shippingAddress}>

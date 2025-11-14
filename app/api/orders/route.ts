@@ -22,6 +22,14 @@ export async function POST(request: Request) {
       )
     }
 
+    // Ensure phoneNumber is provided (required for business logic)
+    if (!phoneNumber || !phoneNumber.trim()) {
+      return NextResponse.json(
+        { error: 'Phone number is required' },
+        { status: 400 }
+      )
+    }
+
     const normalizedItems = cartItems.map((item: any) => {
       const productId =
         typeof item.productId === 'string' ? parseInt(item.productId, 10) : item.productId
