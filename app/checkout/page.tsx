@@ -90,12 +90,16 @@ export default function CheckoutPage() {
         return
       }
 
-      // Clear cart and show success message
-      await refreshCart()
+      // Show success message first
       setSuccess(true)
       
+      // Clear cart after showing success
+      await refreshCart()
+      
       // Redirect to orders page after 3 seconds
-      setTimeout(() => {
+      setTimeout(async () => {
+        // Force refresh before navigating
+        router.refresh()
         router.push('/orders')
       }, 3000)
     } catch (error) {

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import CancelOrderButton from '@/components/CancelOrderButton'
+import { revalidatePath } from 'next/cache'
 
 async function getUserOrders(userId: string) {
   try {
@@ -22,6 +23,10 @@ async function getUserOrders(userId: string) {
     return []
   }
 }
+
+// Force dynamic rendering to always fetch fresh data
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function OrdersPage() {
   const session = await getServerSession(authOptions)
