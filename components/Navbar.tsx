@@ -18,7 +18,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center">
               <img
                 src="/The Big Rose.png"
-                alt="The Big Rose Logo"
+                alt="The Big Rose"
                 className="h-10 w-auto"
               />
             </Link>
