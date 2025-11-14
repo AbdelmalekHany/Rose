@@ -25,8 +25,14 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     // Only redirect if cart is empty AND we're not in the middle of submitting
+    // Add a small delay to allow cartItems to load
     if (cartItems.length === 0 && session && !loading && !success) {
-      router.push('/cart')
+      const timer = setTimeout(() => {
+        if (cartItems.length === 0) {
+          router.push('/cart')
+        }
+      }, 500)
+      return () => clearTimeout(timer)
     }
   }, [cartItems, session, router, loading, success])
 
@@ -38,15 +44,12 @@ export default function CheckoutPage() {
     )
   }
 
-  if (cartItems.length === 0) {
+  // Show loading state while cart is being fetched
+  if (cartItems.length === 0 && session) {
+    // Don't show empty cart message immediately - wait a bit for cart to load
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-center text-gray-600 mb-4">Your cart is empty.</p>
-        <div className="text-center">
-          <button onClick={() => router.push('/cart')} className="btn btn-primary">
-            Go to Cart
-          </button>
-        </div>
+        <p className="text-center text-gray-600 mb-4">Loading checkout...</p>
       </div>
     )
   }
