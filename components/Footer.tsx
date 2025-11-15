@@ -18,17 +18,21 @@ export default function Footer() {
               Your premium destination for quality products. Discover elegance and style in every purchase.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-rose-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-rose-500/50">
-                <i className="fab fa-facebook-f text-sm"></i>
+              <a href="#" className="group relative w-12 h-12 rounded-full bg-gray-800 hover:bg-gradient-to-br hover:from-blue-600 hover:to-blue-700 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/50 overflow-hidden">
+                <i className="fab fa-facebook-f text-sm relative z-10 transform group-hover:scale-110 transition-transform"></i>
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-rose-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-rose-500/50">
-                <i className="fab fa-instagram text-sm"></i>
+              <a href="#" className="group relative w-12 h-12 rounded-full bg-gray-800 hover:bg-gradient-to-br hover:from-pink-600 hover:to-purple-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-pink-500/50 overflow-hidden">
+                <i className="fab fa-instagram text-sm relative z-10 transform group-hover:scale-110 transition-transform"></i>
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-rose-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-rose-500/50">
-                <i className="fab fa-twitter text-sm"></i>
+              <a href="#" className="group relative w-12 h-12 rounded-full bg-gray-800 hover:bg-gradient-to-br hover:from-sky-500 hover:to-sky-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-sky-500/50 overflow-hidden">
+                <i className="fab fa-twitter text-sm relative z-10 transform group-hover:scale-110 transition-transform"></i>
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-rose-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-rose-500/50">
-                <i className="fab fa-youtube text-sm"></i>
+              <a href="#" className="group relative w-12 h-12 rounded-full bg-gray-800 hover:bg-gradient-to-br hover:from-red-600 hover:to-red-700 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/50 overflow-hidden">
+                <i className="fab fa-youtube text-sm relative z-10 transform group-hover:scale-110 transition-transform"></i>
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
             </div>
           </div>
@@ -112,9 +116,18 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} The Big Rose. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-rose-400 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-rose-400 transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-rose-400 transition-colors">Cookie Policy</a>
+              <a href="#" className="relative hover:text-rose-400 transition-colors duration-300 group">
+                Privacy Policy
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-rose-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a href="#" className="relative hover:text-rose-400 transition-colors duration-300 group">
+                Terms of Service
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-rose-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a href="#" className="relative hover:text-rose-400 transition-colors duration-300 group">
+                Cookie Policy
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-rose-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
             </div>
           </div>
         </div>

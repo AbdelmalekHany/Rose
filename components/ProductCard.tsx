@@ -51,14 +51,25 @@ export default function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Link href={`/products/${product.id}`} className="card hover:shadow-xl transition-shadow">
-      <div className="aspect-square relative bg-gray-100">
+    <Link 
+      href={`/products/${product.id}`} 
+      className="group relative block bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] border border-gray-100 hover:border-rose-200"
+    >
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 via-pink-500/0 to-rose-600/0 group-hover:from-rose-500/5 group-hover:via-pink-500/5 group-hover:to-rose-600/5 transition-all duration-500 z-10 pointer-events-none"></div>
+      
+      {/* Shine effect */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-20 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+      </div>
+
+      <div className="aspect-square relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         {displayImage && !imageError ? (
           <Image
             src={displayImage}
             alt={product.name}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
             unoptimized
             onError={() => setImageError(true)}
           />
@@ -66,38 +77,76 @@ export default function ProductCard({ product }: { product: Product }) {
           <img
             src={displayImage}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
             onError={(e) => {
               e.currentTarget.style.display = 'none'
             }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            No Image
+          <div className="w-full h-full flex items-center justify-center text-gray-400 group-hover:text-rose-500 transition-colors">
+            <i className="fas fa-image text-4xl"></i>
           </div>
         )}
+        
+        {/* Quick view overlay */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <span className="text-white font-semibold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 text-lg">
+            Quick View
+          </span>
+        </div>
+
+        {/* Stock badge */}
+        <div className="absolute top-3 right-3 z-30">
+          {product.stock > 0 ? (
+            <span className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-300">
+              In Stock
+            </span>
+          ) : (
+            <span className="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-lg">
+              Out of Stock
+            </span>
+          )}
+        </div>
       </div>
-      <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
+      
+      <div className="p-5 relative z-10 bg-white">
+        <h3 className="font-bold text-lg mb-2 text-gray-800 group-hover:text-rose-600 transition-colors duration-300 line-clamp-1">
+          {product.name}
+        </h3>
         {product.description && (
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2 group-hover:text-gray-700 transition-colors">
+            {product.description}
+          </p>
         )}
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-2xl font-bold text-rose-600">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-2xl font-extrabold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent group-hover:from-rose-500 group-hover:to-pink-500 transition-all duration-300">
             {product.price.toFixed(2)} EGP
           </span>
-          {product.stock > 0 ? (
-            <span className="text-green-600 text-sm">In Stock</span>
-          ) : (
-            <span className="text-red-600 text-sm">Out of Stock</span>
-          )}
         </div>
         <button
           onClick={handleAddToCart}
           disabled={product.stock === 0 || adding}
-          className="w-full btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full relative overflow-hidden px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-xl hover:from-rose-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-rose-500/50 active:scale-95"
         >
-          {adding ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            {adding ? (
+              <>
+                <i className="fas fa-spinner fa-spin"></i>
+                <span>Adding...</span>
+              </>
+            ) : product.stock === 0 ? (
+              <>
+                <i className="fas fa-times-circle"></i>
+                <span>Out of Stock</span>
+              </>
+            ) : (
+              <>
+                <i className="fas fa-shopping-cart"></i>
+                <span>Add to Cart</span>
+              </>
+            )}
+          </span>
+          <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
         </button>
       </div>
     </Link>
