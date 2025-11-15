@@ -30,7 +30,7 @@ export function useCart() {
   const addToCart = async (productId: string, quantity: number = 1) => {
     if (!session?.user?.id) {
       alert('Please login to add items to cart')
-      return
+      return false
     }
 
     try {

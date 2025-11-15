@@ -21,8 +21,8 @@ export async function GET() {
       success: false,
       error: error?.message,
       code: error?.code,
-      userTableExists: !error?.message?.toLowerCase().includes('user'),
-      productTableExists: !error?.message?.toLowerCase().includes('product'),
+      userTableExists: !((error?.message ?? '').toLowerCase().includes('user')),
+      productTableExists: !((error?.message ?? '').toLowerCase().includes('product')),
     }, { status: 500 })
   }
 }

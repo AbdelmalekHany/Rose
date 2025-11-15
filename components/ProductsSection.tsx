@@ -40,7 +40,7 @@ export default function ProductsSection({ products, searchParams }: ProductsSect
       filtered = filtered.filter(
         (product) =>
           product.name.toLowerCase().includes(query) ||
-          product.description?.toLowerCase().includes(query)
+          (product.description ?? '').toLowerCase().includes(query)
       )
     }
 

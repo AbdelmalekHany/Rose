@@ -78,7 +78,7 @@ export default function OrdersAdminList({ orders }: { orders: Order[] }) {
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (order.phoneNumber && order.phoneNumber.includes(searchTerm)) ||
       order.shippingAddress.toLowerCase().includes(searchTerm.toLowerCase())
