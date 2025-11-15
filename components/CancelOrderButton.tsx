@@ -1,53 +1,62 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function CancelOrderButton({ orderId }: { orderId: string }) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
+interface CancelOrderButtonProps {
+  orderId: string;
+  onCancel?: () => void;
+}
+
+export default function CancelOrderButton({
+  orderId,
+  onCancel,
+}: CancelOrderButtonProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCancel = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'CANCELLED' }),
-      })
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CANCELLED" }),
+      });
 
       if (res.ok) {
-        router.refresh()
-        setShowConfirm(false)
+        router.refresh();
+        setShowConfirm(false);
+        if (onCancel) onCancel(); // notify parent
       } else {
-        const data = await res.json()
-        alert(data.error || 'Failed to cancel order')
+        const data = await res.json();
+        alert(data.error || "Failed to cancel order");
       }
     } catch (error) {
-      alert('An error occurred while canceling the order')
+      alert("An error occurred while canceling the order");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setShowConfirm(true)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setShowConfirm(true);
+  };
 
   const handleConfirm = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    await handleCancel()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    await handleCancel();
+  };
 
   const handleCancelClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setShowConfirm(false)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setShowConfirm(false);
+  };
 
   if (showConfirm) {
     return (
@@ -57,7 +66,7 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
           disabled={loading}
           className="btn btn-outline text-red-600 border-red-600 hover:bg-red-50 disabled:opacity-50"
         >
-          {loading ? 'Canceling...' : 'Confirm Cancel'}
+          {loading ? "Canceling..." : "Confirm Cancel"}
         </button>
         <button
           onClick={handleCancelClick}
@@ -67,7 +76,7 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
           Cancel
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -77,6 +86,5 @@ export default function CancelOrderButton({ orderId }: { orderId: string }) {
     >
       Cancel Order
     </button>
-  )
+  );
 }
-
