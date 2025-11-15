@@ -186,7 +186,7 @@ export default async function Home({
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}></div>
         </div>
-        <ScrollAnimation type="fade-left">
+        <ScrollAnimation type="slide-bounce">
           <div className="text-center mb-12 relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-rose-600 via-pink-600 to-rose-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
               Featured Products
@@ -222,7 +222,7 @@ export default async function Home({
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <ScrollAnimation type="fade-up" delay={0}>
+            <ScrollAnimation type="bounce-in" delay={0}>
               <div className="text-center group">
                 <div className="text-5xl md:text-6xl font-extrabold text-white mb-2 transform group-hover:scale-110 transition-transform duration-300">
                   10K+
@@ -230,7 +230,7 @@ export default async function Home({
                 <div className="text-rose-100 text-lg font-medium">Happy Customers</div>
               </div>
             </ScrollAnimation>
-            <ScrollAnimation type="fade-up" delay={100}>
+            <ScrollAnimation type="zoom-bounce" delay={100}>
               <div className="text-center group">
                 <div className="text-5xl md:text-6xl font-extrabold text-white mb-2 transform group-hover:scale-110 transition-transform duration-300">
                   500+
@@ -238,7 +238,7 @@ export default async function Home({
                 <div className="text-rose-100 text-lg font-medium">Products</div>
               </div>
             </ScrollAnimation>
-            <ScrollAnimation type="fade-up" delay={200}>
+            <ScrollAnimation type="elastic" delay={200}>
               <div className="text-center group">
                 <div className="text-5xl md:text-6xl font-extrabold text-white mb-2 transform group-hover:scale-110 transition-transform duration-300">
                   24/7
@@ -246,7 +246,7 @@ export default async function Home({
                 <div className="text-rose-100 text-lg font-medium">Support</div>
               </div>
             </ScrollAnimation>
-            <ScrollAnimation type="fade-up" delay={300}>
+            <ScrollAnimation type="rotate-scale" delay={300}>
               <div className="text-center group">
                 <div className="text-5xl md:text-6xl font-extrabold text-white mb-2 transform group-hover:scale-110 transition-transform duration-300">
                   100%
@@ -268,7 +268,7 @@ export default async function Home({
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollAnimation type="fade-up">
+          <ScrollAnimation type="float-up">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
                 Why Choose Us
@@ -280,7 +280,7 @@ export default async function Home({
           </ScrollAnimation>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <ScrollAnimation type="rotate" delay={0}>
+            <ScrollAnimation type="flip-x" delay={0}>
               <div className="group relative text-center p-8 rounded-3xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-br hover:from-rose-50 hover:to-pink-50 transition-all duration-500 shadow-lg hover:shadow-2xl transform hover:-translate-y-3 border border-gray-100 hover:border-rose-300 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
@@ -297,7 +297,7 @@ export default async function Home({
               </div>
             </ScrollAnimation>
 
-            <ScrollAnimation type="rotate" delay={150}>
+            <ScrollAnimation type="flip-y" delay={150}>
               <div className="group relative text-center p-8 rounded-3xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-br hover:from-rose-50 hover:to-pink-50 transition-all duration-500 shadow-lg hover:shadow-2xl transform hover:-translate-y-3 border border-gray-100 hover:border-rose-300 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
@@ -314,7 +314,7 @@ export default async function Home({
               </div>
             </ScrollAnimation>
 
-            <ScrollAnimation type="rotate" delay={300}>
+            <ScrollAnimation type="slide-rotate" delay={300}>
               <div className="group relative text-center p-8 rounded-3xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-br hover:from-rose-50 hover:to-pink-50 transition-all duration-500 shadow-lg hover:shadow-2xl transform hover:-translate-y-3 border border-gray-100 hover:border-rose-300 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
@@ -331,7 +331,7 @@ export default async function Home({
               </div>
             </ScrollAnimation>
 
-            <ScrollAnimation type="rotate" delay={450}>
+            <ScrollAnimation type="swing" delay={450}>
               <div className="group relative text-center p-8 rounded-3xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-br hover:from-rose-50 hover:to-pink-50 transition-all duration-500 shadow-lg hover:shadow-2xl transform hover:-translate-y-3 border border-gray-100 hover:border-rose-300 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
@@ -354,7 +354,7 @@ export default async function Home({
       {/* Testimonials Section */}
       <section className="relative py-20 bg-gradient-to-br from-gray-50 via-white to-rose-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollAnimation type="fade-up">
+          <ScrollAnimation type="slide-scale">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
                 What Our Customers Say
@@ -364,7 +364,7 @@ export default async function Home({
           </ScrollAnimation>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ScrollAnimation type="fade-up" delay={0}>
+            <ScrollAnimation type="bounce-in" delay={0}>
               <div className="group relative p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 hover:border-rose-200">
                 <div className="absolute top-4 right-4 text-rose-200 text-5xl opacity-50 group-hover:opacity-100 transition-opacity">
                   <i className="fas fa-quote-right"></i>
@@ -391,7 +391,7 @@ export default async function Home({
               </div>
             </ScrollAnimation>
 
-            <ScrollAnimation type="fade-up" delay={150}>
+            <ScrollAnimation type="zoom-bounce" delay={150}>
               <div className="group relative p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 hover:border-rose-200">
                 <div className="absolute top-4 right-4 text-rose-200 text-5xl opacity-50 group-hover:opacity-100 transition-opacity">
                   <i className="fas fa-quote-right"></i>
@@ -418,7 +418,7 @@ export default async function Home({
               </div>
             </ScrollAnimation>
 
-            <ScrollAnimation type="fade-up" delay={300}>
+            <ScrollAnimation type="float-up" delay={300}>
               <div className="group relative p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 hover:border-rose-200">
                 <div className="absolute top-4 right-4 text-rose-200 text-5xl opacity-50 group-hover:opacity-100 transition-opacity">
                   <i className="fas fa-quote-right"></i>

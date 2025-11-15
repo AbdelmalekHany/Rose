@@ -117,6 +117,293 @@
     opacity: 1;
     transform: scale(1);
   }
+
+  /* Bounce In - bounces in from bottom */
+  .scroll-animate-bounce-in {
+    transform: translateY(100px) scale(0.8);
+    opacity: 0;
+  }
+  .scroll-animate-bounce-in.animate-in {
+    opacity: 1;
+    animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  /* Flip X - flips horizontally */
+  .scroll-animate-flip-x {
+    transform: perspective(1000px) rotateY(-90deg);
+    opacity: 0;
+  }
+  .scroll-animate-flip-x.animate-in {
+    opacity: 1;
+    animation: flipX 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Flip Y - flips vertically */
+  .scroll-animate-flip-y {
+    transform: perspective(1000px) rotateX(-90deg);
+    opacity: 0;
+  }
+  .scroll-animate-flip-y.animate-in {
+    opacity: 1;
+    animation: flipY 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Slide Bounce - slides in with bounce */
+  .scroll-animate-slide-bounce {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  .scroll-animate-slide-bounce.animate-in {
+    opacity: 1;
+    animation: slideBounce 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  /* Elastic - elastic bounce effect */
+  .scroll-animate-elastic {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  .scroll-animate-elastic.animate-in {
+    opacity: 1;
+    animation: elastic 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  /* Swing - swings in like a pendulum */
+  .scroll-animate-swing {
+    transform: rotate(-15deg) translateY(50px);
+    opacity: 0;
+    transform-origin: top center;
+  }
+  .scroll-animate-swing.animate-in {
+    opacity: 1;
+    animation: swing 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Float Up - floats up smoothly */
+  .scroll-animate-float-up {
+    transform: translateY(80px) scale(0.95);
+    opacity: 0;
+    filter: blur(10px);
+  }
+  .scroll-animate-float-up.animate-in {
+    opacity: 1;
+    animation: floatUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  /* Slide Rotate - slides in while rotating */
+  .scroll-animate-slide-rotate {
+    transform: translateX(-150px) rotate(-45deg) scale(0.7);
+    opacity: 0;
+  }
+  .scroll-animate-slide-rotate.animate-in {
+    opacity: 1;
+    animation: slideRotate 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Zoom Bounce - zooms with bounce */
+  .scroll-animate-zoom-bounce {
+    transform: scale(0.3) rotate(10deg);
+    opacity: 0;
+  }
+  .scroll-animate-zoom-bounce.animate-in {
+    opacity: 1;
+    animation: zoomBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  /* Slide Scale - slides and scales */
+  .scroll-animate-slide-scale {
+    transform: translateY(100px) scale(0.5);
+    opacity: 0;
+  }
+  .scroll-animate-slide-scale.animate-in {
+    opacity: 1;
+    animation: slideScale 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  /* Rotate Scale - rotates and scales */
+  .scroll-animate-rotate-scale {
+    transform: rotate(180deg) scale(0.3);
+    opacity: 0;
+  }
+  .scroll-animate-rotate-scale.animate-in {
+    opacity: 1;
+    animation: rotateScale 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
+
+/* Keyframe animations */
+@keyframes bounceIn {
+  0% {
+    transform: translateY(100px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(10px) scale(0.95);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes flipX {
+  0% {
+    transform: perspective(1000px) rotateY(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes flipY {
+  0% {
+    transform: perspective(1000px) rotateX(-90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1000px) rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slideBounce {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(20px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes elastic {
+  0% {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(90deg);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(0.9) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(-15deg) translateY(50px);
+    opacity: 0;
+  }
+  20% {
+    transform: rotate(10deg) translateY(20px);
+    opacity: 0.8;
+  }
+  40% {
+    transform: rotate(-5deg) translateY(10px);
+    opacity: 1;
+  }
+  60% {
+    transform: rotate(3deg) translateY(0);
+  }
+  80% {
+    transform: rotate(-1deg);
+  }
+  100% {
+    transform: rotate(0deg) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(80px) scale(0.95);
+    opacity: 0;
+    filter: blur(10px);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes slideRotate {
+  0% {
+    transform: translateX(-150px) rotate(-45deg) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes zoomBounce {
+  0% {
+    transform: scale(0.3) rotate(10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15) rotate(-5deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.95) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slideScale {
+  0% {
+    transform: translateY(100px) scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-10px) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotateScale {
+  0% {
+    transform: rotate(180deg) scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(90deg) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
 }
 
 @layer components {

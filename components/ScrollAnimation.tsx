@@ -2,7 +2,26 @@
 
 import { useEffect, useRef, ReactNode } from 'react'
 
-type AnimationType = 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right' | 'scale' | 'rotate' | 'slide-up' | 'zoom-in'
+type AnimationType = 
+  | 'fade-up' 
+  | 'fade-down' 
+  | 'fade-left' 
+  | 'fade-right' 
+  | 'scale' 
+  | 'rotate' 
+  | 'slide-up' 
+  | 'zoom-in'
+  | 'bounce-in'
+  | 'flip-x'
+  | 'flip-y'
+  | 'slide-bounce'
+  | 'elastic'
+  | 'swing'
+  | 'float-up'
+  | 'slide-rotate'
+  | 'zoom-bounce'
+  | 'slide-scale'
+  | 'rotate-scale'
 
 interface ScrollAnimationProps {
   children: ReactNode
