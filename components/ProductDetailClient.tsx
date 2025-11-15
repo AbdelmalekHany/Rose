@@ -1,3 +1,4 @@
+// A comment to refresh the file
 // ProductDetailClient.tsx
 "use client";
 
