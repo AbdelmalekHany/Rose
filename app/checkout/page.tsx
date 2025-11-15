@@ -23,16 +23,7 @@ export default function CheckoutPage() {
     }
   }, [session, router]);
 
-  useEffect(() => {
-    if (cartItems.length === 0 && session && !loading && !success) {
-      const timer = setTimeout(() => {
-        if (cartItems.length === 0) {
-          router.push("/cart");
-        }
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [cartItems, session, router, loading, success]);
+
 
   if (!session) {
     return (
@@ -194,7 +185,128 @@ export default function CheckoutPage() {
         {/* Form + Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
-          {/* ... keep your existing form JSX here ... */}
+          <form onSubmit={handleSubmit} className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-100">
+            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+              Shipping Information
+            </h2>
+            
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="shippingAddress" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Shipping Address
+                </label>
+                <textarea
+                  id="shippingAddress"
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
+                  rows={4}
+                  placeholder="Enter your full address"
+                  required
+                ></textarea>
+              </div>
+
+              <div>
+                <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
+                  placeholder="e.g., 01234567890"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Order Notes (Optional)
+                </label>
+                <textarea
+                  id="notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.targe.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
+                  rows={3}
+                  placeholder="Any special instructions for your order?"
+                ></textarea>
+              </div>
+            </div>
+
+            {error && <p className="text-red-500 mt-4">{error}</p>}
+
+            <div className="mt-8">
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full btn btn-primary block text-center overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  {loading ? (
+                    <>
+                      <i className="fas fa-spinner animate-spin"></i>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-lock"></i>
+                      <span>Place Order</span>
+                      <i className="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                    </>
+                  )}
+                </span>
+                <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+              </button>
+            </div>
+          </form>
+
+          {/* Summary */}
+          <div className="lg:col-span-1">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-100 sticky top-20">
+              <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                Order Summary
+              </h2>
+              
+              <div className="space-y-4 mb-6">
+                {cartItems.map(item => (
+                  <div key={item.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-16 h-16 relative bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                        <Image src={item.product.image} alt={item.product.name} fill className="object-cover"/>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{item.product.name}</p>
+                        <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                      </div>
+                    </div>
+                    <p className="font-semibold">{(item.product.price * item.quantity).toFixed(2)} EGP</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-gray-200 pt-4 space-y-3">
+                <div className="flex justify-between text-gray-700">
+                  <span>Subtotal</span>
+                  <span className="font-semibold">{subtotal.toFixed(2)} EGP</span>
+                </div>
+                <div className="flex justify-between text-gray-700">
+                  <span>Shipping</span>
+                  <span className={`font-semibold ${subtotal >= 50 ? 'text-green-600' : ''}`}>
+                    {subtotal >= 50 ? 'Free' : `${shipping.toFixed(2)} EGP`}
+                  </span>
+                </div>
+                <div className="border-t-2 border-gray-200 pt-4 flex justify-between font-bold text-xl">
+                  <span>Total</span>
+                  <span className="bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+                    {total.toFixed(2)} EGP
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

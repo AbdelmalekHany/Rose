@@ -11,9 +11,6 @@ export function useCart() {
   useEffect(() => {
     if (session?.user?.id) {
       fetchCart()
-    } else {
-      setCartItems([])
-      setItemCount(0)
     }
   }, [session])
 
