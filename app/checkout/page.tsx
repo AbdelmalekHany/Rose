@@ -23,8 +23,6 @@ export default function CheckoutPage() {
     }
   }, [session, router]);
 
-
-
   if (!session) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -185,14 +183,20 @@ export default function CheckoutPage() {
         {/* Form + Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
-          <form onSubmit={handleSubmit} className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-100">
+          <form
+            onSubmit={handleSubmit}
+            className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-100"
+          >
             <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
               Shipping Information
             </h2>
-            
+
             <div className="space-y-6">
               <div>
-                <label htmlFor="shippingAddress" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  htmlFor="shippingAddress"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
                   Shipping Address
                 </label>
                 <textarea
@@ -207,7 +211,10 @@ export default function CheckoutPage() {
               </div>
 
               <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
                   Phone Number
                 </label>
                 <input
@@ -222,13 +229,16 @@ export default function CheckoutPage() {
               </div>
 
               <div>
-                <label htmlFor="notes" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  htmlFor="notes"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
                   Order Notes (Optional)
                 </label>
                 <textarea
                   id="notes"
                   value={notes}
-                  onChange={(e) => setNotes(e.targe.value)}
+                  onChange={(e) => setNotes(e.target.value)}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all"
                   rows={3}
                   placeholder="Any special instructions for your order?"
@@ -269,20 +279,32 @@ export default function CheckoutPage() {
               <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
                 Order Summary
               </h2>
-              
+
               <div className="space-y-4 mb-6">
-                {cartItems.map(item => (
-                  <div key={item.id} className="flex items-center justify-between">
+                {cartItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="w-16 h-16 relative bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-                        <Image src={item.product.image} alt={item.product.name} fill className="object-cover"/>
+                        <Image
+                          src={item.product.image}
+                          alt={item.product.name}
+                          fill
+                          className="object-cover"
+                        />
                       </div>
                       <div>
                         <p className="font-semibold">{item.product.name}</p>
-                        <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                        <p className="text-sm text-gray-600">
+                          Qty: {item.quantity}
+                        </p>
                       </div>
                     </div>
-                    <p className="font-semibold">{(item.product.price * item.quantity).toFixed(2)} EGP</p>
+                    <p className="font-semibold">
+                      {(item.product.price * item.quantity).toFixed(2)} EGP
+                    </p>
                   </div>
                 ))}
               </div>
@@ -290,12 +312,18 @@ export default function CheckoutPage() {
               <div className="border-t border-gray-200 pt-4 space-y-3">
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal</span>
-                  <span className="font-semibold">{subtotal.toFixed(2)} EGP</span>
+                  <span className="font-semibold">
+                    {subtotal.toFixed(2)} EGP
+                  </span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span>Shipping</span>
-                  <span className={`font-semibold ${subtotal >= 50 ? 'text-green-600' : ''}`}>
-                    {subtotal >= 50 ? 'Free' : `${shipping.toFixed(2)} EGP`}
+                  <span
+                    className={`font-semibold ${
+                      subtotal >= 50 ? "text-green-600" : ""
+                    }`}
+                  >
+                    {subtotal >= 50 ? "Free" : `${shipping.toFixed(2)} EGP`}
                   </span>
                 </div>
                 <div className="border-t-2 border-gray-200 pt-4 flex justify-between font-bold text-xl">
