@@ -4,7 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PageLoader from "@/components/PageLoader";
+import GlobalLoader from "@/components/GlobalLoader";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +34,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <PageLoader />
+          <Suspense fallback={null}>
+            <GlobalLoader />
+          </Suspense>
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />
