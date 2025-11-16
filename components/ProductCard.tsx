@@ -70,7 +70,9 @@ export default function ProductCard({ product }: { product: Product }) {
             alt={product.name}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2"
-            unoptimized
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            priority={false}
+            loading="lazy"
             onError={() => setImageError(true)}
           />
         ) : displayImage && imageError ? (

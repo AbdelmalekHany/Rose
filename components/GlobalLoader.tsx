@@ -11,10 +11,11 @@ export default function GlobalLoader() {
     // Show loading when pathname changes
     setIsLoading(true)
     
-    // Hide loading after a short delay to allow page to render
+    // Hide loading after a minimal delay to allow page to render
+    // Reduced from 500ms to 100ms for faster perceived performance
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 500)
+    }, 100)
 
     return () => clearTimeout(timer)
   }, [pathname])

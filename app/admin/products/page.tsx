@@ -14,13 +14,28 @@ export default async function AdminProductsPage() {
 
   let products: any[] = []
   try {
+    // Optimized: Use select to only fetch needed fields
     products = await prisma.product.findMany({
-      orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        image: true,
+        stock: true,
+        featured: true,
+        createdAt: true,
         images: {
+          select: {
+            id: true,
+            url: true,
+            position: true,
+            isCover: true,
+          },
           orderBy: { position: 'asc' },
         },
-      } as any,
+      },
+      orderBy: { createdAt: 'desc' },
     })
     if (!products) products = []
   } catch (error: any) {
@@ -36,6 +51,16 @@ export default async function AdminProductsPage() {
     ) {
       console.log("Images relation not available, fetching products without images");
       products = await prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          image: true,
+          stock: true,
+          featured: true,
+          createdAt: true,
+        },
         orderBy: { createdAt: 'desc' },
       })
       if (!products) products = []
@@ -44,6 +69,16 @@ export default async function AdminProductsPage() {
       // Last resort fallback
       try {
         products = await prisma.product.findMany({
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            image: true,
+            stock: true,
+            featured: true,
+            createdAt: true,
+          },
           orderBy: { createdAt: 'desc' },
         })
         if (!products) products = []

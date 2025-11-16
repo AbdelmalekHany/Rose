@@ -94,7 +94,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   alt={product.name}
                   fill
                   className="object-cover"
-                  unoptimized
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
                   onError={() => setImageError(true)}
                 />
               ) : displayImage && imageError ? (
@@ -126,7 +127,8 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                       alt={`Thumbnail ${idx + 1}`}
                       fill
                       className="object-cover"
-                      unoptimized
+                      sizes="80px"
+                      loading="lazy"
                     />
                   </button>
                 ))}

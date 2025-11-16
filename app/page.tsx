@@ -5,105 +5,82 @@ import ProductCard from "@/components/ProductCard";
 import ProductsSection from "@/components/ProductsSection";
 import ScrollAnimation from "@/components/ScrollAnimation";
 
-export const dynamic = "force-dynamic"; // correct position
+// Enable ISR (Incremental Static Regeneration) for better performance
+export const revalidate = 60; // Revalidate every 60 seconds
 
-async function getFeaturedProducts() {
+// Optimized: Single query to fetch all products, then filter in memory
+// This reduces database round trips and improves performance
+async function getAllProductsOptimized() {
   try {
     // Try to get products with images first
     try {
       const products = await prisma.product.findMany({
-        where: { featured: true },
-        orderBy: { createdAt: "desc" },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          image: true,
+          stock: true,
+          featured: true,
+          createdAt: true,
           images: {
+            select: {
+              id: true,
+              url: true,
+              position: true,
+              isCover: true,
+            },
             orderBy: { position: "asc" },
           },
-        } as any,
+        },
+        orderBy: { createdAt: "desc" },
       });
       return products || [];
     } catch (error: any) {
       // If images relation fails, get products without images
-      // Catch any Prisma relation errors
       const errorMessage = error?.message?.toLowerCase() || "";
       if (
         errorMessage.includes("productimage") ||
         errorMessage.includes("does not exist") ||
         errorMessage.includes("unknown argument") ||
         errorMessage.includes("relation") ||
-        error?.code === "P2009" || // Prisma validation error
-        error?.code === "P2014" // Prisma relation error
+        error?.code === "P2009" ||
+        error?.code === "P2014"
       ) {
-        console.log(
-          "Images relation not available, fetching products without images"
-        );
         const products = await prisma.product.findMany({
-          where: { featured: true },
-          orderBy: { createdAt: "desc" },
-        });
-        return products || [];
-      }
-      // For other errors, log and rethrow
-      console.error("Error fetching featured products with images:", error);
-      throw error;
-    }
-  } catch (error) {
-    console.error("Error fetching featured products:", error);
-    // Last resort: try to get products without any includes
-    try {
-      const products = await prisma.product.findMany({
-        where: { featured: true },
-        orderBy: { createdAt: "desc" },
-      });
-      return products || [];
-    } catch (fallbackError) {
-      console.error("Fallback query also failed:", fallbackError);
-      return [];
-    }
-  }
-}
-
-async function getAllProducts() {
-  try {
-    // Try to get products with images first
-    try {
-      const products = await prisma.product.findMany({
-        orderBy: { createdAt: "desc" },
-        include: {
-          images: {
-            orderBy: { position: "asc" },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            image: true,
+            stock: true,
+            featured: true,
+            createdAt: true,
           },
-        } as any,
-      });
-      return products || [];
-    } catch (error: any) {
-      // If images relation fails, get products without images
-      // Catch any Prisma relation errors
-      const errorMessage = error?.message?.toLowerCase() || "";
-      if (
-        errorMessage.includes("productimage") ||
-        errorMessage.includes("does not exist") ||
-        errorMessage.includes("unknown argument") ||
-        errorMessage.includes("relation") ||
-        error?.code === "P2009" || // Prisma validation error
-        error?.code === "P2014" // Prisma relation error
-      ) {
-        console.log(
-          "Images relation not available, fetching products without images"
-        );
-        const products = await prisma.product.findMany({
           orderBy: { createdAt: "desc" },
         });
         return products || [];
       }
-      // For other errors, log and rethrow
-      console.error("Error fetching all products with images:", error);
+      console.error("Error fetching products with images:", error);
       throw error;
     }
   } catch (error) {
-    console.error("Error fetching all products:", error);
+    console.error("Error fetching products:", error);
     // Last resort: try to get products without any includes
     try {
       const products = await prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          image: true,
+          stock: true,
+          featured: true,
+          createdAt: true,
+        },
         orderBy: { createdAt: "desc" },
       });
       return products || [];
@@ -119,10 +96,11 @@ export default async function Home({
 }: {
   searchParams: { sort?: string; search?: string };
 }) {
-  const featuredProducts = await getFeaturedProducts();
-  const allProducts = await getAllProducts();
-
-  // Filter out featured products from all products
+  // Optimized: Single database query instead of two
+  const allProducts = await getAllProductsOptimized();
+  
+  // Filter featured and non-featured products in memory (much faster)
+  const featuredProducts = allProducts.filter((p) => p.featured);
   const featuredIds = new Set(featuredProducts.map((p) => p.id));
   const otherProducts = allProducts.filter((p) => !featuredIds.has(p.id));
 

@@ -109,7 +109,8 @@ export default function ProductAdminList({ products }: { products: Product[] }) 
                             alt={product.name}
                             fill
                             className="object-cover rounded"
-                            unoptimized
+                            sizes="100px"
+                            loading="lazy"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
