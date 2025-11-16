@@ -195,7 +195,7 @@ export default function RegisterPage() {
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {loading ? (
                   <>
-                    <i className="fas fa-spinner fa-spin"></i>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     <span>Creating account...</span>
                   </>
                 ) : (

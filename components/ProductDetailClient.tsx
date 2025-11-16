@@ -25,9 +25,8 @@ interface Product {
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
-  const { addToCart } = useCart();
+  const { addToCart, isAdding } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [adding, setAdding] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const router = useRouter();
@@ -63,9 +62,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       return;
     }
 
-    setAdding(true);
     const success = await addToCart(String(product.id), quantity);
-    setAdding(false);
 
     if (success) {
       const goToCart = confirm("Added to cart! Would you like to go to cart?");
@@ -185,14 +182,14 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
               <button
                 onClick={handleAddToCart}
-                disabled={product.stock === 0 || adding}
+                disabled={product.stock === 0 || isAdding}
                 className="relative overflow-hidden px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-xl hover:from-rose-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 hover:shadow-lg"
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  {adding ? (
+                  {isAdding ? (
                     <>
-                      <i className="fas fa-spinner fa-spin"></i>
-                      <span>Adding...</span>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Adding to Cart...</span>
                     </>
                   ) : product.stock === 0 ? (
                     <>

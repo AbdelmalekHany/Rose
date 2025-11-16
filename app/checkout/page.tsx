@@ -5,11 +5,12 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CheckoutPage() {
   const { data: session } = useSession();
   const router = useRouter();
-  const { cartItems, refreshCart } = useCart();
+  const { cartItems, refreshCart, isLoading: cartLoading } = useCart();
   const [shippingAddress, setShippingAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [notes, setNotes] = useState("");
@@ -25,8 +26,28 @@ export default function CheckoutPage() {
 
   if (!session) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p>Loading...</p>
+      <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-pink-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+          </div>
+          <p className="text-gray-700 font-medium text-lg">Please wait...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (cartLoading) {
+    return (
+      <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-pink-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+          </div>
+          <p className="text-gray-700 font-medium text-lg">Loading checkout...</p>
+        </div>
       </div>
     );
   }
@@ -34,7 +55,10 @@ export default function CheckoutPage() {
   if (cartItems.length === 0 && session) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-center text-gray-600 mb-4">Loading checkout...</p>
+        <p className="text-center text-gray-600 mb-4">Your cart is empty. Please add items to checkout.</p>
+        <Link href="/" className="btn btn-primary block text-center max-w-xs mx-auto">
+          Continue Shopping
+        </Link>
       </div>
     );
   }
@@ -257,8 +281,8 @@ export default function CheckoutPage() {
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   {loading ? (
                     <>
-                      <i className="fas fa-spinner animate-spin"></i>
-                      <span>Processing...</span>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Processing Order...</span>
                     </>
                   ) : (
                     <>

@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 
 export default function CartPage() {
   const { data: session } = useSession()
-  const { cartItems, updateQuantity, removeFromCart, refreshCart } = useCart()
+  const { cartItems, updateQuantity, removeFromCart, refreshCart, isLoading, isRemoving, isUpdating } = useCart()
   const router = useRouter()
 
   useEffect(() => {
@@ -25,6 +25,20 @@ export default function CartPage() {
         <Link href="/login" className="btn btn-primary">
           Login
         </Link>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-rose-200 border-t-rose-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-pink-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+          </div>
+          <p className="text-gray-700 font-medium text-lg">Loading your cart...</p>
+        </div>
       </div>
     )
   }
@@ -102,17 +116,26 @@ export default function CartPage() {
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))}
-                              className="w-10 h-10 border-2 border-gray-300 rounded-lg hover:bg-rose-50 hover:border-rose-300 transition-all duration-300 flex items-center justify-center font-bold text-gray-600 hover:text-rose-600"
+                              disabled={isUpdating === item.productId}
+                              className="w-10 h-10 border-2 border-gray-300 rounded-lg hover:bg-rose-50 hover:border-rose-300 transition-all duration-300 flex items-center justify-center font-bold text-gray-600 hover:text-rose-600 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <i className="fas fa-minus text-xs"></i>
+                              {isUpdating === item.productId ? (
+                                <div className="w-4 h-4 border-2 border-rose-200 border-t-rose-600 rounded-full animate-spin"></div>
+                              ) : (
+                                <i className="fas fa-minus text-xs"></i>
+                              )}
                             </button>
                             <span className="w-16 text-center font-bold text-lg">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                              disabled={item.quantity >= item.product.stock}
+                              disabled={item.quantity >= item.product.stock || isUpdating === item.productId}
                               className="w-10 h-10 border-2 border-gray-300 rounded-lg hover:bg-rose-50 hover:border-rose-300 transition-all duration-300 flex items-center justify-center font-bold text-gray-600 hover:text-rose-600 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <i className="fas fa-plus text-xs"></i>
+                              {isUpdating === item.productId ? (
+                                <div className="w-4 h-4 border-2 border-rose-200 border-t-rose-600 rounded-full animate-spin"></div>
+                              ) : (
+                                <i className="fas fa-plus text-xs"></i>
+                              )}
                             </button>
                           </div>
                           
@@ -122,10 +145,20 @@ export default function CartPage() {
                             </span>
                             <button
                               onClick={() => removeFromCart(item.productId)}
-                              className="text-red-600 hover:text-red-700 text-sm font-semibold flex items-center gap-2 hover:scale-110 transition-transform duration-300"
+                              disabled={isRemoving === item.productId}
+                              className="text-red-600 hover:text-red-700 text-sm font-semibold flex items-center gap-2 hover:scale-110 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <i className="fas fa-trash"></i>
-                              <span>Remove</span>
+                              {isRemoving === item.productId ? (
+                                <>
+                                  <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
+                                  <span>Removing...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <i className="fas fa-trash"></i>
+                                  <span>Remove</span>
+                                </>
+                              )}
                             </button>
                           </div>
                         </div>

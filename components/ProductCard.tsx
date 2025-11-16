@@ -24,8 +24,8 @@ interface Product {
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart()
-  const [adding, setAdding] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [isAddingThis, setIsAddingThis] = useState(false)
 
   // Get the cover image (isCover=true) or first image from images array, or fall back to product.image
   const displayImage = product.images && product.images.length > 0 
@@ -41,9 +41,9 @@ export default function ProductCard({ product }: { product: Product }) {
       return
     }
 
-    setAdding(true)
+    setIsAddingThis(true)
     const success = await addToCart(String(product.id), 1)
-    setAdding(false)
+    setIsAddingThis(false)
     
     if (success) {
       alert('Added to cart!')
@@ -125,13 +125,13 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
         <button
           onClick={handleAddToCart}
-          disabled={product.stock === 0 || adding}
+          disabled={product.stock === 0 || isAddingThis}
           className="w-full relative overflow-hidden px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold rounded-xl hover:from-rose-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-rose-500/50 active:scale-95"
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
-            {adding ? (
+            {isAddingThis ? (
               <>
-                <i className="fas fa-spinner fa-spin"></i>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Adding...</span>
               </>
             ) : product.stock === 0 ? (
