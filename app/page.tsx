@@ -33,6 +33,11 @@ async function getAllProductsOptimized() {
             },
             orderBy: { position: "asc" },
           },
+          reviews: {
+            select: {
+              rating: true,
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
       });
@@ -58,6 +63,11 @@ async function getAllProductsOptimized() {
             stock: true,
             featured: true,
             createdAt: true,
+            reviews: {
+              select: {
+                rating: true,
+              },
+            },
           },
           orderBy: { createdAt: "desc" },
         });

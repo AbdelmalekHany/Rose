@@ -21,6 +21,7 @@ model Product {
   cartItems   CartItem[]
   orderItems  OrderItem[]
   images      ProductImage[]
+  reviews     Review[]
 }
 
 model ProductImage {
@@ -46,6 +47,7 @@ model User {
   updatedAt     DateTime   @updatedAt
   cartItems     CartItem[]
   orders        Order[]
+  reviews       Review[]
 }
 
 model CartItem {
@@ -85,4 +87,21 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 
   @@index([orderId])
+}
+
+model Review {
+  id              String   @id @default(cuid())
+  productId       Int
+  userId          String
+  rating          Int      // 1-5 stars
+  comment         String?
+  verifiedPurchase Boolean @default(false) // Whether user actually purchased the product
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId]) // One review per user per product
+  @@index([productId])
+  @@index([userId])
 }

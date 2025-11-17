@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from '@/hooks/useCart'
 import { useState } from 'react'
+import StarRating from './StarRating'
 
 interface ProductImage {
   id: number
@@ -20,6 +21,7 @@ interface Product {
   image?: string | null
   stock: number
   images?: ProductImage[]
+  reviews?: { rating: number }[]
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -31,6 +33,13 @@ export default function ProductCard({ product }: { product: Product }) {
   const displayImage = product.images && product.images.length > 0 
     ? (product.images.find(img => img.isCover)?.url || product.images[0].url)
     : product.image
+
+  // Calculate average rating
+  const averageRating =
+    product.reviews && product.reviews.length > 0
+      ? product.reviews.reduce((sum, review) => sum + review.rating, 0) /
+        product.reviews.length
+      : 0
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -116,9 +125,18 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         {product.description && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2 group-hover:text-gray-700 transition-colors">
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2 group-hover:text-gray-700 transition-colors">
             {product.description}
           </p>
+        )}
+        {/* Rating */}
+        {averageRating > 0 && (
+          <div className="mb-3 flex items-center gap-2">
+            <StarRating rating={averageRating} size="sm" />
+            <span className="text-xs text-gray-500">
+              ({product.reviews?.length || 0})
+            </span>
+          </div>
         )}
         <div className="flex justify-between items-center mb-4">
           <span className="text-2xl font-extrabold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent group-hover:from-rose-500 group-hover:to-pink-500 transition-all duration-300">

@@ -5,6 +5,9 @@ import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ReviewSummary from "@/components/ReviewSummary";
+import ReviewList from "@/components/ReviewList";
+import ReviewForm from "@/components/ReviewForm";
 
 interface ProductImage {
   id: number | string;
@@ -212,6 +215,42 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             {product.category && (
               <div className="text-sm text-gray-500">Category: {product.category}</div>
             )}
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-16 space-y-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent mb-2">
+              Customer Reviews
+            </h2>
+            <p className="text-gray-600">See what our customers are saying</p>
+          </div>
+
+          {/* Review Summary */}
+          <ReviewSummary productId={product.id} />
+
+          {/* Review Form */}
+          <ReviewForm
+            productId={product.id}
+            onReviewSubmitted={() => {
+              // Trigger refresh of reviews
+              const event = new Event('reviewSubmitted')
+              window.dispatchEvent(event)
+            }}
+          />
+
+          {/* Review List */}
+          <div className="mt-8">
+            <h3 className="text-2xl font-bold mb-6 text-gray-800">All Reviews</h3>
+            <ReviewList 
+              productId={product.id}
+              onRefresh={() => {
+                // Trigger refresh of summary
+                const event = new Event('reviewRefresh')
+                window.dispatchEvent(event)
+              }}
+            />
           </div>
         </div>
       </div>

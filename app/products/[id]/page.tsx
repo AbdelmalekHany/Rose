@@ -10,13 +10,19 @@ async function getProduct(id: string) {
       return null
     }
     
-    // Try to get product with images first
+    // Try to get product with images and reviews first
     try {
       const product = await prisma.product.findUnique({
         where: { id: productId },
         include: {
           images: {
             orderBy: { position: "asc" },
+          },
+          reviews: {
+            select: {
+              id: true,
+              rating: true,
+            },
           },
         } as any,
       })
@@ -35,6 +41,14 @@ async function getProduct(id: string) {
         console.log("Images relation not available, fetching product without images");
         const product = await prisma.product.findUnique({
           where: { id: productId },
+          include: {
+            reviews: {
+              select: {
+                id: true,
+                rating: true,
+              },
+            },
+          },
         })
         return product
       }
