@@ -4,6 +4,7 @@ import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import ProductsSection from "@/components/ProductsSection";
 import ScrollAnimation from "@/components/ScrollAnimation";
+import { seasonalTheme } from "@/config/seasonalTheme";
 
 // Enable ISR (Incremental Static Regeneration) for better performance
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -22,7 +23,7 @@ async function getAllProductsOptimized() {
           price: true,
           image: true,
           stock: true,
-          featured: true,
+          seasonalTag: true,
           createdAt: true,
           images: {
             select: {
@@ -61,7 +62,7 @@ async function getAllProductsOptimized() {
             price: true,
             image: true,
             stock: true,
-            featured: true,
+            seasonalTag: true,
             createdAt: true,
             reviews: {
               select: {
@@ -88,7 +89,7 @@ async function getAllProductsOptimized() {
           price: true,
           image: true,
           stock: true,
-          featured: true,
+          seasonalTag: true,
           createdAt: true,
         },
         orderBy: { createdAt: "desc" },
@@ -108,93 +109,143 @@ export default async function Home({
 }) {
   // Optimized: Single database query instead of two
   const allProducts = await getAllProductsOptimized();
-  
-  // Filter featured and non-featured products in memory (much faster)
-  const featuredProducts = allProducts.filter((p) => p.featured);
-  const featuredIds = new Set(featuredProducts.map((p) => p.id));
-  const otherProducts = allProducts.filter((p) => !featuredIds.has(p.id));
+
+  // Group products by current seasonal campaign
+  const seasonalProducts = allProducts.filter(
+    (p) => p.seasonalTag && p.seasonalTag === seasonalTheme.slug
+  );
+  const seasonalIds = new Set(seasonalProducts.map((p) => p.id));
+  const otherProducts = allProducts.filter((p) => !seasonalIds.has(p.id));
 
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-rose-500 via-pink-500 to-rose-600 text-white py-24 md:py-32 overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-rose-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-rose-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <ScrollAnimation type="zoom-in">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-tight">
-              Welcome to The Big Rose
+      <section
+        className="relative overflow-hidden text-white py-20 md:py-28"
+        style={{ background: seasonalTheme.accent }}
+      >
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{ backgroundImage: seasonalTheme.backgroundPattern }}
+        ></div>
+        <div className="absolute inset-x-0 -top-20 h-64 bg-white/10 blur-[120px]"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse lg:flex-row items-center gap-14">
+          <div className="flex-1 text-center lg:text-left space-y-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 text-sm uppercase tracking-[0.25em] font-semibold shadow-lg">
+              <i className="fas fa-sparkles"></i>
+              {seasonalTheme.badge}
+            </span>
+            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+              {seasonalTheme.title}
             </h1>
-          </ScrollAnimation>
-          <ScrollAnimation type="fade-up" delay={150}>
-            <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto text-rose-50 font-light">
-              Discover premium products curated just for you!
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl">
+              {seasonalTheme.description}
             </p>
-          </ScrollAnimation>
-          <ScrollAnimation type="scale" delay={300}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center lg:justify-start">
               <a
-                href="#featured"
-                className="group relative inline-block px-8 py-4 bg-white text-rose-600 font-semibold rounded-full overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl"
+                href={seasonalTheme.ctaPrimary.href}
+                className="group inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-xl hover:-translate-y-1 transition-transform"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  <span>Shop Featured</span>
-                  <i className="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-rose-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {seasonalTheme.ctaPrimary.label}
+                <i className="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
               </a>
               <a
-                href="#products"
-                className="group relative inline-block px-8 py-4 bg-rose-700/80 backdrop-blur-sm text-white font-semibold rounded-full overflow-hidden transform hover:scale-105 transition-all duration-300 border-2 border-white/30 hover:border-white/50 shadow-lg hover:shadow-2xl"
+                href={seasonalTheme.ctaSecondary.href}
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/40 text-white font-semibold hover:bg-white/10 transition-colors"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  <span>Browse All</span>
-                  <i className="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-rose-800/90 to-pink-800/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {seasonalTheme.ctaSecondary.label}
               </a>
             </div>
-          </ScrollAnimation>
+          </div>
+          <div className="flex-1 relative w-full max-w-md">
+            <div className="absolute inset-0 blur-3xl opacity-50" style={{ background: seasonalTheme.accentLight }}></div>
+            <div className="relative rounded-[28px] overflow-hidden border border-white/30 shadow-2xl bg-white/10 backdrop-blur">
+              <div className="p-8 space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-white/70">
+                      Seasonal mood
+                    </p>
+                    <p className="text-2xl font-bold">{seasonalTheme.subtitle}</p>
+                  </div>
+                  <span className="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-white/20">
+                    {seasonalTheme.slug}
+                  </span>
+                </div>
+                <div className="relative h-60 rounded-2xl overflow-hidden shadow-lg border border-white/10">
+                  <Image
+                    src={seasonalTheme.heroImage}
+                    alt={seasonalTheme.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <div className="text-xs uppercase tracking-widest text-white/80">
+                      Limited drop
+                    </div>
+                    <div className="text-lg font-semibold">
+                      {seasonalProducts.length} curated pieces
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-left text-sm text-white/80">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-white/60">
+                      Accent
+                    </p>
+                    <p className="font-semibold">{seasonalTheme.accent}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-white/60">
+                      Mood
+                    </p>
+                    <p className="font-semibold">Fresh & Elevated</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Seasonal Products */}
       <section
-        id="featured"
-        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-b from-white via-rose-50/30 to-white"
+        id="seasonal"
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
       >
-        {/* Decorative background pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: seasonalTheme.backgroundPattern }}></div>
+        <div className="relative z-10">
+          <ScrollAnimation type="slide-bounce">
+            <div className="text-center mb-12">
+              <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-rose-50 text-rose-500 font-semibold text-sm">
+                <i className="fas fa-leaf"></i>
+                Seasonal drop
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-3">
+                {seasonalTheme.title}
+              </h2>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                {seasonalTheme.subtitle}
+              </p>
+            </div>
+          </ScrollAnimation>
+          {seasonalProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {seasonalProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">
+                No seasonal products are live right now. Add the slug{" "}
+                <span className="font-semibold">{seasonalTheme.slug}</span> to products you want to spotlight.
+              </p>
+            </div>
+          )}
         </div>
-        <ScrollAnimation type="slide-bounce">
-          <div className="text-center mb-12 relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-rose-600 via-pink-600 to-rose-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-              Featured Products
-            </h2>
-            <p className="text-gray-600 text-lg">Handpicked favorites just for you</p>
-          </div>
-        </ScrollAnimation>
-        {featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 relative z-10">
-            <p className="text-gray-500 text-lg">
-              No featured products available.
-            </p>
-          </div>
-        )}
       </section>
 
       {/* All Products Section */}

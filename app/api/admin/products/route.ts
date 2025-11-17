@@ -12,7 +12,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { name, description, price, image, category, stock, featured, images, coverIndex } = body
+    const {
+      name,
+      description,
+      price,
+      image,
+      category,
+      stock,
+      seasonalTag,
+      images,
+      coverIndex,
+    } = body
 
     if (!name || !description || price === undefined || !category || stock === undefined) {
       return NextResponse.json(
@@ -45,6 +55,11 @@ export async function POST(request: Request) {
       chosenCoverIndex = 0
     }
 
+    const normalizedSeasonalTag =
+      typeof seasonalTag === 'string' && seasonalTag.trim().length > 0
+        ? seasonalTag.trim()
+        : null
+
     let result
     try {
       result = await prisma.$transaction(async (tx) => {
@@ -56,7 +71,7 @@ export async function POST(request: Request) {
             image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
             category: category || null,
             stock: parseInt(stock),
-            featured: featured || false,
+            seasonalTag: normalizedSeasonalTag,
           },
         })
 
@@ -84,7 +99,7 @@ export async function POST(request: Request) {
             image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
             category: category || null,
             stock: parseInt(stock),
-            featured: featured || false,
+            seasonalTag: normalizedSeasonalTag,
           },
         })
       } else {

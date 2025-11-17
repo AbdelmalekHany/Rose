@@ -20,6 +20,7 @@ interface Product {
   stock: number
   createdAt: Date
   images?: ProductImage[]
+  seasonalTag?: string | null
 }
 
 interface ProductsSectionProps {

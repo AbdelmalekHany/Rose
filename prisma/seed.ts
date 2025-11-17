@@ -42,7 +42,7 @@ async function main() {
       price: 49.99,
       category: 'Flowers',
       stock: 50,
-      featured: true,
+      seasonalTag: 'spring-blossom',
     },
     {
       name: 'Sit Amet Consectetur',
@@ -50,7 +50,7 @@ async function main() {
       price: 24.99,
       category: 'Home Decor',
       stock: 30,
-      featured: true,
+      seasonalTag: 'spring-blossom',
     },
     {
       name: 'Adipiscing Elit Sed',
@@ -58,7 +58,7 @@ async function main() {
       price: 129.99,
       category: 'Jewelry',
       stock: 20,
-      featured: true,
+      seasonalTag: 'spring-blossom',
     },
     {
       name: 'Tempor Incididunt Ut',
@@ -66,7 +66,7 @@ async function main() {
       price: 34.99,
       category: 'Personal Care',
       stock: 40,
-      featured: false,
+      seasonalTag: null,
     },
     {
       name: 'Labore Et Dolore',
@@ -74,7 +74,7 @@ async function main() {
       price: 79.99,
       category: 'Home Decor',
       stock: 15,
-      featured: false,
+      seasonalTag: null,
     },
     {
       name: 'Magna Aliqua Ut',
@@ -82,7 +82,7 @@ async function main() {
       price: 29.99,
       category: 'Personal Care',
       stock: 25,
-      featured: false,
+      seasonalTag: null,
     },
   ]
 

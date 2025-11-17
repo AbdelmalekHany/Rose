@@ -20,7 +20,7 @@ interface Product {
   image?: string | null
   category: string | null
   stock: number
-  featured: boolean
+  seasonalTag?: string | null
   images?: ProductImage[]
 }
 
@@ -73,7 +73,7 @@ export default function ProductAdminList({ products }: { products: Product[] }) 
                 Stock
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Featured
+                Seasonal Tag
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Actions
@@ -152,13 +152,13 @@ export default function ProductAdminList({ products }: { products: Product[] }) 
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {product.featured ? (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold border border-yellow-300">
-                        <i className="fas fa-star"></i>
-                        <span>Yes</span>
+                    {product.seasonalTag ? (
+                      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold border border-purple-200">
+                        <i className="fas fa-leaf"></i>
+                        <span>{product.seasonalTag}</span>
                       </span>
                     ) : (
-                      <span className="text-gray-400 text-sm">No</span>
+                      <span className="text-gray-400 text-sm">—</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { seasonalTheme } from "@/config/seasonalTheme";
 import ReviewSummary from "@/components/ReviewSummary";
 import ReviewList from "@/components/ReviewList";
 import ReviewForm from "@/components/ReviewForm";
@@ -25,6 +26,7 @@ interface Product {
   category: string | null;
   stock: number;
   images?: ProductImage[];
+  seasonalTag?: string | null;
 }
 
 export default function ProductDetailClient({ product }: { product: Product }) {
@@ -212,9 +214,15 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </button>
             </div>
 
-            {product.category && (
-              <div className="text-sm text-gray-500">Category: {product.category}</div>
-            )}
+            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+              {product.category && <span>Category: {product.category}</span>}
+              {product.seasonalTag === seasonalTheme.slug && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-50 text-rose-500 text-xs font-semibold">
+                  <i className="fas fa-leaf"></i>
+                  Seasonal highlight
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

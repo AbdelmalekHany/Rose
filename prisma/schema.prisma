@@ -15,13 +15,15 @@ model Product {
   image       String?
   category    String?
   stock       Int            @default(0)
-  featured    Boolean        @default(false)
+  seasonalTag String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   cartItems   CartItem[]
   orderItems  OrderItem[]
   images      ProductImage[]
   reviews     Review[]
+
+  @@index([seasonalTag])
 }
 
 model ProductImage {

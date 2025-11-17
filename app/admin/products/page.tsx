@@ -23,7 +23,7 @@ export default async function AdminProductsPage() {
         price: true,
         image: true,
         stock: true,
-        featured: true,
+        seasonalTag: true,
         createdAt: true,
         images: {
           select: {
@@ -58,7 +58,7 @@ export default async function AdminProductsPage() {
           price: true,
           image: true,
           stock: true,
-          featured: true,
+          seasonalTag: true,
           createdAt: true,
         },
         orderBy: { createdAt: 'desc' },
@@ -76,7 +76,7 @@ export default async function AdminProductsPage() {
             price: true,
             image: true,
             stock: true,
-            featured: true,
+          seasonalTag: true,
             createdAt: true,
           },
           orderBy: { createdAt: 'desc' },

@@ -15,7 +15,17 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { name, description, price, image, category, stock, featured, images, coverIndex } = body
+    const {
+      name,
+      description,
+      price,
+      image,
+      category,
+      stock,
+      seasonalTag,
+      images,
+      coverIndex,
+    } = body
 
     if (!name || !description || price === undefined || !category || stock === undefined) {
       return NextResponse.json(
@@ -50,6 +60,11 @@ export async function PUT(
       chosenCoverIndex = 0
     }
 
+    const normalizedSeasonalTag =
+      typeof seasonalTag === 'string' && seasonalTag.trim().length > 0
+        ? seasonalTag.trim()
+        : null
+
     let updated
     try {
       updated = await prisma.$transaction(async (tx) => {
@@ -62,7 +77,7 @@ export async function PUT(
             image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
             category: category || null,
             stock: parseInt(stock),
-            featured: featured || false,
+            seasonalTag: normalizedSeasonalTag,
           },
         })
 
@@ -108,7 +123,7 @@ export async function PUT(
             image: imageUrls && imageUrls.length > 0 ? imageUrls[chosenCoverIndex] : null,
             category: category || null,
             stock: parseInt(stock),
-            featured: featured || false,
+            seasonalTag: normalizedSeasonalTag,
           },
         })
       } else {

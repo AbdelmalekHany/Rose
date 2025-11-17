@@ -18,7 +18,7 @@ interface Product {
   image?: string | null
   category: string | null
   stock: number
-  featured: boolean
+  seasonalTag?: string | null
   images?: ProductImage[]
 }
 
@@ -31,7 +31,7 @@ export default function ProductForm({ product }: { product?: Product }) {
     image: product?.image || '',
     category: product?.category || '',
     stock: product?.stock.toString() || '0',
-    featured: product?.featured || false,
+    seasonalTag: product?.seasonalTag || '',
   })
   
   // Initialize images from product images array or fallback to single image
@@ -188,6 +188,24 @@ export default function ProductForm({ product }: { product?: Product }) {
       </div>
 
       <div>
+        <label htmlFor="seasonalTag" className="block text-sm font-medium mb-2">
+          Seasonal Tag (optional)
+        </label>
+        <input
+          id="seasonalTag"
+          type="text"
+          value={formData.seasonalTag}
+          onChange={(e) => setFormData({ ...formData, seasonalTag: e.target.value })}
+          className="input"
+          placeholder="e.g., spring-blossom, eid-classics, valentines-24"
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          Use a short slug to group products for limited events or seasons. Match this to the slug configured in
+          <code className="mx-1 rounded bg-gray-100 px-1 py-0.5 text-[10px]">config/seasonalTheme.ts</code>.
+        </p>
+      </div>
+
+      <div>
         <label className="block text-sm font-medium mb-2">
           Product Images
         </label>
@@ -259,21 +277,6 @@ export default function ProductForm({ product }: { product?: Product }) {
         <p className="mt-1 text-xs text-gray-500">
           This field is kept for backward compatibility. Use the Product Images section above for multiple images.
         </p>
-      </div>
-
-      <div className="flex items-center">
-        <input
-          id="featured"
-          type="checkbox"
-          checked={formData.featured}
-          onChange={(e) =>
-            setFormData({ ...formData, featured: e.target.checked })
-          }
-          className="w-4 h-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
-        />
-        <label htmlFor="featured" className="ml-2 text-sm font-medium">
-          Featured Product
-        </label>
       </div>
 
       <div className="flex gap-4">

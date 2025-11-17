@@ -29,10 +29,10 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              href="/#featured"
+              href="/#seasonal"
               className="relative text-gray-700 hover:text-rose-600 transition-all duration-300 font-medium group"
             >
-              Featured
+              Seasonal
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-rose-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <Link
@@ -133,11 +133,11 @@ export default function Navbar() {
           <div className="md:hidden border-t border-gray-200 py-4 animate-slide-down">
             <div className="flex flex-col space-y-4">
               <Link
-                href="/#featured"
+                href="/#seasonal"
                 className="text-gray-700 hover:text-rose-600 transition-colors font-medium px-2 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Featured
+                Seasonal
               </Link>
               <Link
                 href="/#products"

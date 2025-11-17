@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useCart } from '@/hooks/useCart'
 import { useState } from 'react'
 import StarRating from './StarRating'
+import { seasonalTheme } from '@/config/seasonalTheme'
 
 interface ProductImage {
   id: number
@@ -22,6 +23,7 @@ interface Product {
   stock: number
   images?: ProductImage[]
   reviews?: { rating: number }[]
+  seasonalTag?: string | null
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -40,6 +42,7 @@ export default function ProductCard({ product }: { product: Product }) {
       ? product.reviews.reduce((sum, review) => sum + review.rating, 0) /
         product.reviews.length
       : 0
+  const isCurrentSeason = product.seasonalTag === seasonalTheme.slug
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -73,6 +76,13 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div className="aspect-square relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+        {isCurrentSeason && (
+          <span className="absolute top-3 left-3 z-30 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
+            style={{ backgroundColor: `${seasonalTheme.accentLight}`, color: seasonalTheme.accentDark }}>
+            <i className="fas fa-leaf"></i>
+            Seasonal
+          </span>
+        )}
         {displayImage && !imageError ? (
           <Image
             src={displayImage}

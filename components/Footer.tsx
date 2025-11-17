@@ -41,9 +41,9 @@ export default function Footer() {
             <h4 className="text-white font-bold mb-6 text-lg">Shop</h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/#featured" className="text-gray-400 hover:text-rose-400 transition-colors duration-200 flex items-center gap-2 group">
+                <Link href="/#seasonal" className="text-gray-400 hover:text-rose-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-rose-600 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                  Featured Products
+                  Seasonal Collection
                 </Link>
               </li>
               <li>
