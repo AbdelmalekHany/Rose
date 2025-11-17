@@ -39,7 +39,7 @@ export default function ReviewSummary({ productId }: ReviewSummaryProps) {
 
   const fetchSummary = async () => {
     try {
-      const response = await fetch(`/api/reviews/${productId}`)
+      const response = await fetch(`/api/reviews/product/${productId}`)
       if (response.ok) {
         const result = await response.json()
         const reviews = result.reviews || []

@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 // DELETE - Delete a review (admin or own review)
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { reviewId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -16,7 +16,7 @@ export async function DELETE(
     }
 
     const review = await prisma.review.findUnique({
-      where: { id: params.id },
+      where: { id: params.reviewId },
     })
 
     if (!review) {
@@ -35,7 +35,7 @@ export async function DELETE(
     }
 
     await prisma.review.delete({
-      where: { id: params.id },
+      where: { id: params.reviewId },
     })
 
     return NextResponse.json({ message: 'Review deleted successfully' })

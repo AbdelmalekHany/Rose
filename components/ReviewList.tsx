@@ -44,7 +44,7 @@ export default function ReviewList({ productId, onRefresh }: ReviewListProps) {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch(`/api/reviews/${productId}`)
+      const response = await fetch(`/api/reviews/product/${productId}`)
       if (response.ok) {
         const data = await response.json()
         setReviews(data.reviews || [])
