@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import ProductsSection from "@/components/ProductsSection";
 import ScrollAnimation from "@/components/ScrollAnimation";
-import { seasonalTheme } from "@/config/seasonalTheme";
+import { getActiveSeasonalTheme } from "@/lib/seasonal";
+import AnimatedHero from "@/components/AnimatedHero";
 
 // Enable ISR (Incremental Static Regeneration) for better performance
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -109,6 +109,7 @@ export default async function Home({
 }) {
   // Optimized: Single database query instead of two
   const allProducts = await getAllProductsOptimized();
+  const seasonalTheme = await getActiveSeasonalTheme();
 
   // Group products by current seasonal campaign
   const seasonalProducts = allProducts.filter(
@@ -119,94 +120,7 @@ export default async function Home({
 
   return (
     <div>
-      {/* Hero Section */}
-      <section
-        className="relative overflow-hidden text-white py-20 md:py-28 bg-seasonal-accent"
-      >
-        <div
-          className="absolute inset-0 opacity-40 bg-seasonal-pattern"
-        ></div>
-        <div className="absolute inset-x-0 -top-20 h-64 bg-white/10 blur-[120px]"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse lg:flex-row items-center gap-14">
-          <div className="flex-1 text-center lg:text-left space-y-6">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 text-sm uppercase tracking-[0.25em] font-semibold shadow-lg">
-              <i className="fas fa-sparkles"></i>
-              {seasonalTheme.badge}
-            </span>
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-              {seasonalTheme.title}
-            </h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl">
-              {seasonalTheme.description}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center lg:justify-start">
-              <a
-                href={seasonalTheme.ctaPrimary.href}
-                className="group inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-white text-gray-900 font-semibold shadow-xl hover:-translate-y-1 transition-transform"
-              >
-                {seasonalTheme.ctaPrimary.label}
-                <i className="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-              </a>
-              <a
-                href={seasonalTheme.ctaSecondary.href}
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/40 text-white font-semibold hover:bg-white/10 transition-colors"
-              >
-                {seasonalTheme.ctaSecondary.label}
-              </a>
-            </div>
-          </div>
-          <div className="flex-1 relative w-full max-w-md">
-            <div className="absolute inset-0 blur-3xl opacity-50 bg-seasonal-accent-light"></div>
-            <div className="relative rounded-[28px] overflow-hidden border border-white/30 shadow-2xl bg-white/10 backdrop-blur">
-              <div className="p-8 space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-                      Seasonal mood
-                    </p>
-                    <p className="text-2xl font-bold">{seasonalTheme.subtitle}</p>
-                  </div>
-                  <span className="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-white/20">
-                    {seasonalTheme.slug}
-                  </span>
-                </div>
-                <div className="relative h-60 rounded-2xl overflow-hidden shadow-lg border border-white/10">
-                  <Image
-                    src={seasonalTheme.heroImage}
-                    alt={seasonalTheme.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <div className="text-xs uppercase tracking-widest text-white/80">
-                      Limited drop
-                    </div>
-                    <div className="text-lg font-semibold">
-                      {seasonalProducts.length} curated pieces
-                    </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-left text-sm text-white/80">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-white/60">
-                      Accent
-                    </p>
-                    <p className="font-semibold">{seasonalTheme.accent}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-white/60">
-                      Mood
-                    </p>
-                    <p className="font-semibold">Fresh & Elevated</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AnimatedHero campaign={seasonalTheme} seasonalProductCount={seasonalProducts.length} />
 
       {/* Seasonal Products */}
       <section

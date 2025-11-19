@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useCart } from '@/hooks/useCart'
 import { useState } from 'react'
 import StarRating from './StarRating'
-import { seasonalTheme } from '@/config/seasonalTheme'
+import { useSeasonalTheme } from '@/components/SeasonalThemeProvider'
 
 interface ProductImage {
   id: number
@@ -30,6 +30,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart()
   const [imageError, setImageError] = useState(false)
   const [isAddingThis, setIsAddingThis] = useState(false)
+  const seasonalTheme = useSeasonalTheme()
 
   // Get the cover image (isCover=true) or first image from images array, or fall back to product.image
   const displayImage = product.images && product.images.length > 0 
@@ -77,8 +78,10 @@ export default function ProductCard({ product }: { product: Product }) {
 
       <div className="aspect-square relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         {isCurrentSeason && (
-          <span className="absolute top-3 left-3 z-30 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-            style={{ backgroundColor: `${seasonalTheme.accentLight}`, color: seasonalTheme.accentDark }}>
+          <span
+            className="absolute top-3 left-3 z-30 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
+            style={{ backgroundColor: seasonalTheme.accentLight, color: seasonalTheme.accentDark }}
+          >
             <i className="fas fa-leaf"></i>
             Seasonal
           </span>

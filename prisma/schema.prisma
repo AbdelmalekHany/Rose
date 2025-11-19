@@ -107,3 +107,25 @@ model Review {
   @@index([productId])
   @@index([userId])
 }
+
+model SeasonalCampaign {
+  id                Int      @id @default(autoincrement())
+  slug              String   @unique
+  badge             String
+  title             String
+  subtitle          String?
+  description       String?
+  heroImage         String?
+  heroHeadline      String?
+  heroSubheadline   String?
+  accent            String?
+  accentLight       String?
+  accentDark        String?
+  ctaPrimaryLabel   String?
+  ctaPrimaryHref    String?
+  ctaSecondaryLabel String?
+  ctaSecondaryHref  String?
+  isActive          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

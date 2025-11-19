@@ -5,6 +5,12 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --seasonal-accent: #f43f5e;
+    --seasonal-accent-light: #fecdd3;
+    --seasonal-accent-dark: #be185d;
+  }
+
   body {
     @apply bg-gradient-to-br from-gray-50 via-white to-rose-50/20 text-gray-900;
     background-attachment: fixed;

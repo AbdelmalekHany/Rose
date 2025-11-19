@@ -49,7 +49,6 @@ export default async function AdminPage() {
               <p className="text-gray-600 group-hover:text-gray-700">View and update order status</p>
             </div>
           </Link>
-          
           <Link href="/admin/users" className="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 hover:border-rose-200 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/5 group-hover:to-pink-500/5 transition-all duration-500"></div>
             <div className="relative">
@@ -58,6 +57,21 @@ export default async function AdminPage() {
               </div>
               <h2 className="text-2xl font-bold mb-2 text-gray-800 group-hover:text-rose-600 transition-colors">Manage Users</h2>
               <p className="text-gray-600 group-hover:text-gray-700">View user accounts</p>
+            </div>
+          </Link>
+
+          <Link href="/admin/seasonal" className="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 hover:border-rose-200 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/5 group-hover:to-pink-500/5 transition-all duration-500"></div>
+            <div className="relative">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white text-3xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <i className="fas fa-wand-magic-sparkles"></i>
+              </div>
+              <h2 className="text-2xl font-bold mb-2 text-gray-800 group-hover:text-rose-600 transition-colors">
+                Manage Seasonal
+              </h2>
+              <p className="text-gray-600 group-hover:text-gray-700">
+                Update hero copy, accent colors, and active campaign slug
+              </p>
             </div>
           </Link>
         </div>

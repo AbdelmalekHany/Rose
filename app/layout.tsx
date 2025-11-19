@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GlobalLoader from "@/components/GlobalLoader";
 import { Suspense } from "react";
+import { SeasonalThemeProvider } from "@/components/SeasonalThemeProvider";
+import { getActiveSeasonalTheme } from "@/lib/seasonal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,22 +30,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const seasonalTheme = await getActiveSeasonalTheme();
+
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          <Suspense fallback={null}>
-            <GlobalLoader />
-          </Suspense>
-          <Navbar />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-        </Providers>
+        <SeasonalThemeProvider value={seasonalTheme}>
+          <Providers>
+            <Suspense fallback={null}>
+              <GlobalLoader />
+            </Suspense>
+            <Navbar />
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+          </Providers>
+        </SeasonalThemeProvider>
       </body>
     </html>
   );

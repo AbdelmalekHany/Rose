@@ -200,8 +200,8 @@ export default function ProductForm({ product }: { product?: Product }) {
           placeholder="e.g., spring-blossom, eid-classics, valentines-24"
         />
         <p className="mt-1 text-xs text-gray-500">
-          Use a short slug to group products for limited events or seasons. Match this to the slug configured in
-          <code className="mx-1 rounded bg-gray-100 px-1 py-0.5 text-[10px]">config/seasonalTheme.ts</code>.
+          Use a short slug to group products for limited events or seasons. Match this to the active slug shown inside the
+          <span className="mx-1 rounded bg-gray-100 px-1 py-0.5 text-[10px]">Manage Seasonal</span> admin page.
         </p>
       </div>
 

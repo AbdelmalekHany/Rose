@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { seasonalTheme } from "@/config/seasonalTheme";
+import { useSeasonalTheme } from "@/components/SeasonalThemeProvider";
 import ReviewSummary from "@/components/ReviewSummary";
 import ReviewList from "@/components/ReviewList";
 import ReviewForm from "@/components/ReviewForm";
@@ -35,6 +35,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   const [imageError, setImageError] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const router = useRouter();
+  const seasonalTheme = useSeasonalTheme();
 
   // Collect all images, prefer product.images over product.image
   const allImages =
