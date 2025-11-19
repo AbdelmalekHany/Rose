@@ -1,4 +1,5 @@
 import { cache } from 'react'
+import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
 import { seasonalTheme as defaultTheme, SeasonalThemeConfig } from '@/config/seasonalTheme'
 
@@ -51,7 +52,9 @@ export async function listSeasonalCampaigns() {
   })
 }
 
-export async function deactivateAllCampaigns(tx = prisma) {
+type SeasonalClient = Prisma.TransactionClient | typeof prisma
+
+export async function deactivateAllCampaigns(tx: SeasonalClient = prisma) {
   await tx.seasonalCampaign.updateMany({
     data: { isActive: false },
     where: { isActive: true },
