@@ -5,12 +5,13 @@ import { prisma } from '@/lib/prisma'
 import { deactivateAllCampaigns } from '@/lib/seasonal'
 import { revalidatePath } from 'next/cache'
 
-async function ensureAdmin() {
-function revalidateSeasonalPages() {
+const revalidateSeasonalPages = () => {
   revalidatePath('/')
   revalidatePath('/admin')
   revalidatePath('/admin/seasonal')
 }
+
+async function ensureAdmin() {
   const session = await getServerSession(authOptions)
 
   if (!session?.user?.role || session.user.role !== 'ADMIN') {
