@@ -258,7 +258,7 @@ export default async function Home({
           <div className="absolute top-0 left-0 w-96 h-96 bg-rose-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         </div>
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <ScrollAnimation type="bounce-in" delay={0}>
@@ -319,18 +319,19 @@ export default async function Home({
           </ScrollAnimation>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
             <ScrollAnimation type="flip-x" delay={0}>
               <div className="group relative text-center p-8 rounded-3xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-br hover:from-rose-50 hover:to-pink-50 transition-all duration-500 shadow-lg hover:shadow-2xl transform hover:-translate-y-3 border border-gray-100 hover:border-rose-300 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
                   <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-rose-500/50">
-                    <i className="fas fa-lock"></i>
+                    <i className="fas fa-heart"></i>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-rose-600 transition-colors">
-                    Secure Payment
+                    Heartfelt
                   </h3>
                   <p className="text-gray-600 group-hover:text-gray-700">
-                    100% secure checkout with encrypted transactions
+                    Our velvet wire bouquets are designed to bring warmth and joy, creating lasting memories for any occasion.
                   </p>
                 </div>
               </div>
@@ -341,13 +342,13 @@ export default async function Home({
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
                   <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-rose-500/50">
-                    <i className="fas fa-undo"></i>
+                    <i className="fas fa-leaf"></i>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-rose-600 transition-colors">
-                    Easy Returns
+                    Long-Lasting
                   </h3>
                   <p className="text-gray-600 group-hover:text-gray-700">
-                    30-day hassle-free return policy
+                    Made entirely from velvet wire, our bouquets keep their color and charm for seasons to come.
                   </p>
                 </div>
               </div>
@@ -358,13 +359,13 @@ export default async function Home({
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
                   <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-rose-500/50">
-                    <i className="fas fa-shipping-fast"></i>
+                    <i className="fas fa-gift"></i>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-rose-600 transition-colors">
-                    Fast Shipping
+                    Simple & Delightful
                   </h3>
                   <p className="text-gray-600 group-hover:text-gray-700">
-                    Quick and reliable delivery to your doorstep
+                    Every bouquet is ready to gift, easy to display, and fun to enjoy — no extra effort needed.
                   </p>
                 </div>
               </div>
@@ -375,17 +376,18 @@ export default async function Home({
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 to-pink-500/0 group-hover:from-rose-500/10 group-hover:to-pink-500/10 transition-all duration-500"></div>
                 <div className="relative z-10">
                   <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl group-hover:shadow-rose-500/50">
-                    <i className="fas fa-headset"></i>
+                    <i className="fas fa-shipping-fast"></i>
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-rose-600 transition-colors">
-                    24/7 Support
+                    Fast Shipping
                   </h3>
                   <p className="text-gray-600 group-hover:text-gray-700">
-                    Round-the-clock customer service assistance
+                    Quick and reliable delivery straight to your doorstep.
                   </p>
                 </div>
               </div>
             </ScrollAnimation>
+
           </div>
         </div>
       </section>
@@ -403,6 +405,7 @@ export default async function Home({
           </ScrollAnimation>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
             <ScrollAnimation type="bounce-in" delay={0}>
               <div className="group relative p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 hover:border-rose-200">
                 <div className="absolute top-4 right-4 text-rose-200 text-5xl opacity-50 group-hover:opacity-100 transition-opacity">
@@ -415,7 +418,7 @@ export default async function Home({
                     ))}
                   </div>
                   <p className="text-gray-700 leading-relaxed mb-6">
-                    "Amazing quality products and excellent customer service! The shipping was super fast and everything arrived perfectly packaged."
+                    "Beautiful bouquets made from velvet wire. The flowers look lovely and shipping was fast."
                   </p>
                 </div>
                 <div className="flex items-center">
@@ -442,7 +445,7 @@ export default async function Home({
                     ))}
                   </div>
                   <p className="text-gray-700 leading-relaxed mb-6">
-                    "I've been shopping here for months and I'm always impressed. Great prices, quality products, and the return policy gives me peace of mind."
+                    "I love these bouquets! They’re easy to gift and maintain, and the colors stay vibrant."
                   </p>
                 </div>
                 <div className="flex items-center">
@@ -469,7 +472,7 @@ export default async function Home({
                     ))}
                   </div>
                   <p className="text-gray-700 leading-relaxed mb-6">
-                    "The best online shopping experience I've had! Beautiful website, easy checkout, and my order arrived exactly as described. Highly recommend!"
+                    "Great experience! The bouquets arrived on time and look just like the pictures."
                   </p>
                 </div>
                 <div className="flex items-center">
@@ -483,6 +486,7 @@ export default async function Home({
                 </div>
               </div>
             </ScrollAnimation>
+
           </div>
         </div>
       </section>
@@ -493,7 +497,7 @@ export default async function Home({
           <div className="absolute top-0 right-0 w-96 h-96 bg-rose-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
-        
+
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollAnimation type="zoom-in">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
